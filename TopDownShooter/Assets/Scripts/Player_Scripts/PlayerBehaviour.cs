@@ -33,18 +33,24 @@ public class PlayerBehaviour : MonoBehaviour {
 	/// <summary>
 	/// The rocket sprite contained by the player
 	/// </summary>
-	private GameObject rocket;
+	private GameObject bulletPrefab;
 
+	/// <summary>
+	/// GameObject containing prefab of a bullet instance
+	/// </summary>
 	private GameObject bulletInstance;
 
-	private Vector3 shootDirection;
+	/// <summary>
+	/// Vector in direction from player sprite to mouse position
+	/// </summary>
+	private Vector3 shootVector;
 
 	// Use this for initialization
 	void Start () {
 
 		motionCoeff = 30;
 		bulletSpeed = 50;
-		rocket = GameObject.Find ("Sprite_Rocket");//.GetComponent<Rocket> ();
+		bulletPrefab = GameObject.Find ("Sprite_Bullet");
 
 	}
 	
@@ -81,7 +87,6 @@ public class PlayerBehaviour : MonoBehaviour {
 
 			RaycastHit rayHit;
 			RaycastHit playerRayHit;
-			//shootDirection = Input.mousePosition;
 
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Ray playerRay = new Ray (transform.position, transform.forward);
@@ -91,28 +96,17 @@ public class PlayerBehaviour : MonoBehaviour {
 
 			if (mouseRayCheck && playerRayCheck) 
 			{
-				float xValue = rayHit.point.x - transform.position.x;//.point.x;
-				float yValue = rayHit.point.y - transform.position.y;//playerRayHit.point.y;
+				float xValue = rayHit.point.x - transform.position.x;
+				float yValue = rayHit.point.y - transform.position.y;
 
-				Vector3 shootVector = new Vector3 (xValue, yValue, 0);
+				shootVector.x = xValue;
+				shootVector.y = yValue;;
+				shootVector.z = 0.0f;
 
-				bulletInstance = Instantiate(rocket, transform.position, transform.rotation) as GameObject;
-				bulletInstance.GetComponent<Rocket>().setIsFiredTrue(shootVector);
+				bulletInstance = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+				bulletInstance.GetComponent<Bullet>().setIsFiredTrue(shootVector);
 			}
-
-
-
-
-			//Debug.DrawRay (ray.origin, ray.direction * 1000, Color.red, 7, false);
-
-		
-		
-			//Physics2D.IgnoreCollision (bulletInstance.GetComponent<Collider2D>(), GetComponent<Collider2D>());
-
 		}
-			
-		//Physics2D.IgnoreCollision (bulletInstance.GetComponent<Collider2D>(), GetComponent<Collider2D>());
-
 
 	}
 
