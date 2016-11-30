@@ -10,7 +10,7 @@ public class Rocket : MonoBehaviour {
 
 	private GameObject player;
 
-	private Vector2 fireDirection;
+	private Vector3 fireDirection;
 
 	public bool isFired;
 
@@ -26,15 +26,18 @@ public class Rocket : MonoBehaviour {
 		if (isFired) 
 		{
 			Physics2D.IgnoreCollision (player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
-			transform.Translate(Vector2.up);
+			transform.Translate(fireDirection * Time.deltaTime * 2);
 		}
 	
 	}
 
 	public void setIsFiredTrue(Vector3 shootDirection)
 	{
-		Debug.Log("ShootDirection X: " + shootDirection.x);
+		//Debug.DrawLine(shootDirection,);
+
 		Debug.Log ("ShootDirection Y: " + shootDirection.y);
+		fireDirection = shootDirection;
 		isFired = true;
+
 	}
 }

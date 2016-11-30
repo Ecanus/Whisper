@@ -91,15 +91,10 @@ public class PlayerBehaviour : MonoBehaviour {
 
 			if (mouseRayCheck && playerRayCheck) 
 			{
-				float xValue = rayHit.point.x - playerRayHit.point.x;
-				float yValue = rayHit.point.y - playerRayHit.point.y;
+				float xValue = rayHit.point.x - transform.position.x;//.point.x;
+				float yValue = rayHit.point.y - transform.position.y;//playerRayHit.point.y;
 
 				Vector3 shootVector = new Vector3 (xValue, yValue, 0);
-
-				Debug.Log ("Found Object: " + rayHit.distance);
-				Debug.DrawRay (transform.position, rayHit.point, Color.cyan, 7);
-				Debug.DrawRay (transform.position, playerRayHit.point, Color.green, 7);
-				Debug.DrawRay (playerRayHit.point, shootVector, Color.red, 7);
 
 				bulletInstance = Instantiate(rocket, transform.position, transform.rotation) as GameObject;
 				bulletInstance.GetComponent<Rocket>().setIsFiredTrue(shootVector);
