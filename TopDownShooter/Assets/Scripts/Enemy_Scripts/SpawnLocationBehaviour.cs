@@ -27,6 +27,7 @@ public class SpawnLocationBehaviour : MonoBehaviour {
 	
 		enemyPrefab = GameObject.Find ("Sprite_Enemy");
 		InvokeRepeating("spawnEnemy", 1f, 1f);
+
 	}
 	
 	// Update is called once per frame
