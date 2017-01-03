@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections.Generic;
 
 
@@ -45,9 +46,21 @@ public class PlayerBehaviour : MonoBehaviour {
 	/// </summary>
 	private Vector3 shootVector;
 
+	/// <summary>
+	/// the Player score
+	/// </summary>
+	[SerializeField]
+	private int playerScore;
+
+	/// <summary>
+	/// Text of player score
+	/// </summary>
+	private GameObject scoreText;
+	private Text score;
 
 
-
+	private float verticalExtent;
+	private float horizontalExtent;
 
 
 	/// <summary>
@@ -70,6 +83,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
 	private void handleFiring()
 	{
+
+		//Left Click handling. For standard bullets
 		if (Input.GetMouseButtonDown(0)) 
 		{	
 			int layerMask = 1 << 5;
@@ -79,8 +94,8 @@ public class PlayerBehaviour : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Ray playerRay = new Ray (transform.position, transform.forward);
 
-			bool mouseRayCheck = Physics.Raycast (ray,  out rayHit, 1000, layerMask);
-			bool playerRayCheck = Physics.Raycast (playerRay, out playerRayHit, 1000, layerMask);
+			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);//, layerMask);
+			bool playerRayCheck = Physics.Raycast (playerRay, out playerRayHit, 1000);//, layerMask);
 
 			if (mouseRayCheck && playerRayCheck) 
 			{
@@ -89,15 +104,43 @@ public class PlayerBehaviour : MonoBehaviour {
 
 				shootVector.x = xValue;
 				shootVector.y = yValue;;
-				shootVector.z = 0.0f;
+
 
 				bulletInstance = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
 				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector);
-				//Destroy (bulletInstance, 2);
+				Destroy (bulletInstance, 0.5f);
 			}
+		}
+
+		//Right Click handling. For placing Whisper
+		if (Input.GetMouseButtonDown (1)) 
+		{
+			
+			RaycastHit rayHit;
+			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
+
+			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
+
+
+			//if(rayHit.collider.isTrigger)
+
+			GameObject whisperImage = GameObject.Find ("WhisperIndicator_Top");
+			whisperImage.SetActive (false);
 		}
 	}
 
+
+	private void handleDamage()
+	{
+		Time.timeScale = 0;
+	}
+
+	public void increaseScore ()
+	{
+		playerScore++;
+		score = scoreText.gameObject.GetComponent<Text>();
+		score.text = "Score: " + playerScore;
+	}
 
 	/// <summary>
 	/// Constrains the player position within the camera viewport
@@ -105,29 +148,45 @@ public class PlayerBehaviour : MonoBehaviour {
 	/// </summary>
 	private void cameraConstrain()
 	{
+
+
 		Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
-		pos.x = Mathf.Clamp(pos.x, 0, 1);
-		pos.y = Mathf.Clamp(pos.y, 0, 1);
+		pos.x = Mathf.Clamp(pos.x, 0.05f, 0.95f);
+		pos.y = Mathf.Clamp(pos.y, 0.05f, 0.95f);
 		transform.position = Camera.main.ViewportToWorldPoint(pos);
 
 	}
 
 
+	private void OnTriggerEnter2D(Collider2D other)
+	{
+
+		if (other.gameObject.tag == "Enemy")
+		{
+			handleDamage();
+		}
+
+	}
 
 	// Use this for initialization
 	void Start () {
 
+		//getCameraBounds();
+
 		motionCoeff = 30;
 		bulletSpeed = 50;
 		bulletPrefab = GameObject.Find ("Sprite_Bullet");
+
+		playerScore = 0;
+
+		scoreText = GameObject.Find("Player_Score");
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
-		Vector3 pos = transform.position;
-		pos.z = 0;
+		Vector2 pos = transform.position;
 		transform.position = pos;
 
 

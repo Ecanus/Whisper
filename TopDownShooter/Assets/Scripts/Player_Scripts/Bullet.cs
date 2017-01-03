@@ -32,8 +32,8 @@ public class Bullet : MonoBehaviour {
 		
 		if (other.gameObject.tag == "Enemy")
 		{
-			Destroy (other);
-			//other.gameObject.GetComponent<EnemyBehaviour>().isShot();
+			other.gameObject.GetComponent<EnemyBehaviour>().isShot();
+			player.gameObject.GetComponent<PlayerBehaviour> ().increaseScore ();
 			//other.gameObject.GetComponent<EnemyBehaviour> ().healthValue--;
 		}
 

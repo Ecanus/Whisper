@@ -13,20 +13,29 @@ public class SpawnLocationBehaviour : MonoBehaviour {
 	/// </summary>
 	private GameObject enemyInstance;
 
+
+
 	/// <summary>
 	/// Spawns the enemy.
 	/// </summary>
 	private void spawnEnemy()
 	{
 		enemyInstance = Instantiate(enemyPrefab, transform.position, transform.rotation) as GameObject;
+		enemyInstance.SetActive (true);
 	}
 
+
+	private void createEnemies(int enemyType)
+	{
+		
+	}
 
 	// Use this for initialization
 	void Start () {
 	
 		enemyPrefab = GameObject.Find ("Sprite_Enemy");
 		InvokeRepeating("spawnEnemy", 1f, 1f);
+		//enemyPrefab.SetActive (false);
 
 	}
 	

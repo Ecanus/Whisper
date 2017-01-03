@@ -4,28 +4,30 @@ using System.Collections;
 public class EnemyBehaviour : MonoBehaviour {
 
 	/// <summary>
-	/// The player gameObject. Used to create a path towards the player sprite.
+	/// The destination gameObject. The location towards which the enemy goes towards.
 	/// </summary>
-	private GameObject player;
+	private GameObject destination;
 
 	/// <summary>
 	/// The player position vector. Keeps track of a vector from enemy to player
 	/// </summary>
-	private Vector3 playerPosition;
+	private Vector2 destinationPos;
 
 
 
 	[Header("Enemy States")] 
 	[SerializeField]
 	[Tooltip("Enemy Health")]
-	public int healthValue;
+	private int healthValue;
 
-	private void seekPlayer()
+	private void seekDestination()
 	{
-		playerPosition.x = player.transform.position.x - transform.position.x;
-		playerPosition.y = player.transform.position.y - transform.position.y;
+		//destinationPos.x = destination.transform.position.x - transform.position.x;
+		//destinationPos.y = destination.transform.position.y - transform.position.y;
+		Vector2 from = transform.position;
+		Vector2 to = destination.transform.position;
 
-		transform.Translate (playerPosition * Time.deltaTime);
+		transform.position = Vector2.Lerp (from, to, 0.01f);;
 	}
 
 
@@ -33,8 +35,7 @@ public class EnemyBehaviour : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		player = GameObject.Find ("Sprite_Player");
-		playerPosition.z = 0.0f;
+		destination = GameObject.Find ("Sprite_Player");
 
 		healthValue = 1;
 	}
@@ -42,7 +43,8 @@ public class EnemyBehaviour : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		seekPlayer();
+		seekDestination();
+
 	}
 
 	/// <summary>
@@ -51,7 +53,7 @@ public class EnemyBehaviour : MonoBehaviour {
 	public void isShot()
 	{
 		healthValue--;
-		if ((healthValue <= 0) && gameObject.name == "Sprite_Enemy(Clone)") {
+		if ((healthValue <= 0)){// && gameObject.name == "Sprite_Enemy(Clone)") {
 			Destroy (this.gameObject);
 		}
 	}
