@@ -11,6 +11,11 @@ public class Bullet : MonoBehaviour {
 
 	private Vector3 fireDirection;
 
+	private float bulletSpeed;
+
+	[SerializeField]
+	private string isFiredDomain;
+
 	public bool isFired;
 
 
@@ -19,26 +24,36 @@ public class Bullet : MonoBehaviour {
 	/// Sets fireDirection and sets isFIred to true
 	/// </summary>
 	/// <param name="shootDirection">Vector calculated from player to mouse position. Determines bullet trajectory.</param>
-	public void fireBullet(Vector3 shootDirection)
+	public void fireBullet(Vector3 shootDirection, string firedDomain)
 	{
 		fireDirection = shootDirection;
-		fireDirection.Normalize ();
+		//fireDirection.Normalize ();
 		isFired = true;
+
+		isFiredDomain = firedDomain;
 
 	}	
 
-	private void OnTriggerEnter2D(Collider2D other)
+
+	private void OnTriggerEnter(Collider other)
 	{
 		
 		if (other.gameObject.tag == "Enemy")
 		{
 			other.gameObject.GetComponent<EnemyBehaviour>().isShot();
 			player.gameObject.GetComponent<PlayerBehaviour> ().increaseScore ();
-			//other.gameObject.GetComponent<EnemyBehaviour> ().healthValue--;
 		}
 
 	}
 
+	private void OnTriggerExit(Collider other)
+	{
+		if ((other.gameObject.name == isFiredDomain) && (gameObject.name != "Sprite_Bullet")) 
+		{
+			Debug.Log("FireDirection Before: " + fireDirection.x + ", " + fireDirection.y);
+			fireDirection.x = (-1) * fireDirection.x;
+		}
+	}
 
 	private void destroyBullet()
 	{
@@ -47,8 +62,10 @@ public class Bullet : MonoBehaviour {
 			Destroy (gameObject, 2);
 		}
 	}
+
 	// Use this for initialization
 	void Start () {
+		bulletSpeed = 30f;
 		player = GameObject.Find ("Sprite_Player");
 
 	}
@@ -57,11 +74,10 @@ public class Bullet : MonoBehaviour {
 	void Update () {
 
 
-		//destroyBullet();
 		if (isFired) 
 		{
-			Physics2D.IgnoreCollision (player.GetComponent<Collider2D>(), GetComponent<Collider2D>());
-			transform.Translate(fireDirection * Time.deltaTime * 65);
+			//Physics.IgnoreCollision (player.GetComponent<Collider>(), GetComponent<Collider>());
+			transform.Translate(fireDirection * Time.deltaTime * bulletSpeed);
 		}
 	
 	}

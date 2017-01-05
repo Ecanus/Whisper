@@ -44,7 +44,14 @@ public class PlayerBehaviour : MonoBehaviour {
 	/// <summary>
 	/// Vector in direction from player sprite to mouse position
 	/// </summary>
+	[SerializeField]
 	private Vector3 shootVector;
+
+	/// <summary>
+	/// Name of the quad that player is currently located in.
+	/// </summary>
+	[SerializeField]
+	private string quadLocation;
 
 	/// <summary>
 	/// the Player score
@@ -94,8 +101,8 @@ public class PlayerBehaviour : MonoBehaviour {
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			Ray playerRay = new Ray (transform.position, transform.forward);
 
-			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);//, layerMask);
-			bool playerRayCheck = Physics.Raycast (playerRay, out playerRayHit, 1000);//, layerMask);
+			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000, layerMask);
+			bool playerRayCheck = Physics.Raycast (playerRay, out playerRayHit, 1000, layerMask);
 
 			if (mouseRayCheck && playerRayCheck) 
 			{
@@ -105,10 +112,12 @@ public class PlayerBehaviour : MonoBehaviour {
 				shootVector.x = xValue;
 				shootVector.y = yValue;;
 
+				shootVector.Normalize();
 
 				bulletInstance = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
-				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector);
-				Destroy (bulletInstance, 0.5f);
+				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadLocation);
+
+				Destroy (bulletInstance, 1.5f);
 			}
 		}
 
@@ -158,14 +167,21 @@ public class PlayerBehaviour : MonoBehaviour {
 	}
 
 
-	private void OnTriggerEnter2D(Collider2D other)
+	private void OnTriggerEnter(Collider other)
 	{
 
 		if (other.gameObject.tag == "Enemy")
 		{
 			handleDamage();
 		}
+	}
 
+	private void OnTriggerStay(Collider other)
+	{
+		if (other.gameObject.tag == "Quad") 
+		{
+			quadLocation = other.gameObject.name;
+		}
 	}
 
 	// Use this for initialization

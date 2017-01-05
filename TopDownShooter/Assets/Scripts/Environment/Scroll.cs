@@ -6,12 +6,12 @@ public class Scroll : MonoBehaviour {
 
 	public float speed = 0.2f; 
 
-	private float currentTime;
+	private float currentOffsetTime;
 
 	private void scrollImage()
 	{
-		Vector2 offset = new Vector2 (0, currentTime * speed);
-		currentTime = Time.time;
+		Vector2 offset = new Vector2 (0f, (currentOffsetTime * speed) % 1 );
+		currentOffsetTime += Time.deltaTime;
 		GetComponent<Renderer>().material.mainTextureOffset = offset;
 	}
 
@@ -24,22 +24,12 @@ public class Scroll : MonoBehaviour {
 		}
 
 	}
-
-	private void OnTriggerEnter(Collider other)
-	{
-		Debug.Log ("currentTime Enter is: " + currentTime);
-	}
-
-	private void OnTriggerExit(Collider other)
-	{
-		Debug.Log("CurrentTime Exit is: " + currentTime);
-	}
 		
 
 	// Use this for initialization
 	void Start () {
 
-		//Camera cam = Camera.main;
+		currentOffsetTime = Time.deltaTime;
 	}
 	
 	// Update is called once per frame
