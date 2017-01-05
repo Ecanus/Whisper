@@ -84,7 +84,7 @@ public class PlayerBehaviour : MonoBehaviour {
 	private void handleFiring()
 	{
 
-		//Left Click handling. For standard bullets
+		//Left Click handling. For firing standard bullets
 		if (Input.GetMouseButtonDown(0)) 
 		{	
 			int layerMask = 1 << 5;
@@ -173,8 +173,8 @@ public class PlayerBehaviour : MonoBehaviour {
 
 		//getCameraBounds();
 
-		motionCoeff = 30;
-		bulletSpeed = 50;
+		motionCoeff = 18;
+		bulletSpeed = 2;
 		bulletPrefab = GameObject.Find ("Sprite_Bullet");
 
 		playerScore = 0;

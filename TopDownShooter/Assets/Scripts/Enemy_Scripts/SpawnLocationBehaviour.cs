@@ -32,7 +32,7 @@ public class SpawnLocationBehaviour : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	
+
 		enemyPrefab = GameObject.Find ("Sprite_Enemy");
 		InvokeRepeating("spawnEnemy", 1f, 1f);
 		//enemyPrefab.SetActive (false);
