@@ -39,15 +39,7 @@ public class QuadController : MonoBehaviour {
 	{
 		foreach (Transform child in transform) 
 		{
-			if (child.transform.tag == "Enemy") 
-			{
-				child.GetComponent<Enemy> ().halt ();
-			}
-
-			if (child.transform.tag == "SpawnPoint") 
-			{
-				child.GetComponent<SpawnPointController>().halt ();
-			}
+			child.GetComponent<IQuadChild>().halt();
 		}
 	}
 
@@ -55,15 +47,7 @@ public class QuadController : MonoBehaviour {
 	{
 		foreach (Transform child in transform) 
 		{
-			if (child.transform.tag == "Enemy") 
-			{
-				child.GetComponent<Enemy>().actuate();
-			}
-
-			if (child.transform.tag == "SpawnPoint") 
-			{
-				child.GetComponent<SpawnPointController> ().actuate();
-			}
+			child.GetComponent<IQuadChild>().actuate();
 		}
 	}
 

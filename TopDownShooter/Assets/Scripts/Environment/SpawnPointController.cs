@@ -13,14 +13,16 @@ using System.Collections;
 public class SpawnPointController : MonoBehaviour, IQuadChild {
 
 	/// <summary>
-	/// The enemy prefab.
+	/// Original prefabs of assets to be instantiated.
 	/// </summary>
 	private GameObject enemyPrefab;
+	private GameObject barricadePrefab;
 
 	/// <summary>
-	/// The enemy instance.
+	/// GameObjects to hold instantiated assets during runtime
 	/// </summary>
 	private GameObject enemyInstance;
+	private GameObject barricadeInstance;
 
 	/// <summary>
 	/// SpawnPoint state of being able to spawn new enemies
@@ -36,15 +38,29 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 		{
 			enemyInstance = Instantiate (enemyPrefab, transform.position, transform.rotation) as GameObject;
 			enemyInstance.transform.parent = gameObject.transform.parent;
-			enemyInstance.SetActive (true);
 		}
 	}
 
+	private void spawnBarricade()
+	{
+		if (canCreate) 
+		{
+			barricadeInstance = Instantiate (barricadePrefab, transform.position, transform.rotation) as GameObject;
+			barricadeInstance.transform.parent = gameObject.transform.parent;
+		}
+	}
+
+	/// <summary>
+	/// IQuadChild Method for halting motion
+	/// </summary>
 	public void halt()
 	{
 		canCreate = false;
 	}
 
+	/// <summary>
+	/// IQuadChild Methord fo actuating motion
+	/// </summary>
 	public void actuate()
 	{
 		canCreate = true;
@@ -54,7 +70,10 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	void Start () {
 
 		enemyPrefab = GameObject.Find ("Sprite_EnemyDigit");
+		barricadePrefab = GameObject.Find ("Sprite_BarricadeStandard");
+
 		InvokeRepeating("spawnEnemy", 1f, 0.5f);
+		InvokeRepeating ("spawnBarricade", 1f, 1f);
 
 	}
 	

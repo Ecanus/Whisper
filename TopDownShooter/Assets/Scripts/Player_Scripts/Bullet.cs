@@ -13,11 +13,6 @@ using System.Collections;
 public class Bullet : MonoBehaviour {
 
 	/// <summary>
-	/// The player gameobject
-	/// </summary>
-	private GameObject player;
-
-	/// <summary>
 	/// Direction bullet is fired in
 	/// </summary>
 	private Vector3 fireDirection;
@@ -54,16 +49,7 @@ public class Bullet : MonoBehaviour {
 
 	}	
 
-	/// <summary>
-	/// Destroys bullet
-	/// </summary>
-	private void destroyBullet()
-	{
-		if (gameObject.name == "Sprite_Bullet(Clone)") 
-		{
-			Destroy (gameObject, 2);
-		}
-	}
+
 
 
 	private void OnTriggerEnter(Collider other)
@@ -89,7 +75,6 @@ public class Bullet : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		bulletSpeed = 15f;
-		player = GameObject.Find ("Sprite_Player");
 
 	}
 	

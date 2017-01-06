@@ -15,12 +15,12 @@ public class EnemyDigitController : Enemy {
 	/// <summary>
 	/// Moves enemy towards target destination
 	/// </summary>
-	protected override void seekDestination()
+	protected override void seekTarget()
 	{
 		Vector2 from = transform.position;
 		Vector2 to = target.transform.position;
 
-		transform.position = Vector2.Lerp (from, to, 0.02f);;
+		transform.position = Vector2.Lerp (from, to, fallSpeed);;
 	}
 
 
@@ -30,6 +30,7 @@ public class EnemyDigitController : Enemy {
 		target = GameObject.Find("Sprite_Player");
 		player = GameObject.Find("Sprite_Player");
 
+		fallSpeed = 0.02f;
 		healthValue = 1;
 	}
 	
@@ -38,7 +39,7 @@ public class EnemyDigitController : Enemy {
 	
 		if (isMoving) 
 		{
-			seekDestination();
+			seekTarget();
 		} 
 
 	}

@@ -32,15 +32,15 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	protected int healthValue;
 
 	/// <summary>
-	/// Moves enemy towards target destination
+	/// Speed at which Enemy falls towards bottom of screen
 	/// </summary>
-	protected abstract void seekDestination ();
+	protected float fallSpeed;
 
 	/// <summary>
-	/// Name of quad that enemy was spawned in
+	/// Moves enemy towards target destination
 	/// </summary>
-	[SerializeField]
-	protected string quadName;
+	protected abstract void seekTarget();
+
 
 	/// <summary>
 	/// Enemy state of being in motion
@@ -61,11 +61,17 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 		}
 	}
 
+	/// <summary>
+	/// IQuadChild Method for halting motion
+	/// </summary>
 	public void halt()
 	{
 		isMoving = false;
 	}
 
+	/// <summary>
+	/// IQuadChild Methord fo actuating motion
+	/// </summary>
 	public void actuate()
 	{
 		isMoving = true;
