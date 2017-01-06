@@ -2,20 +2,39 @@
 using System.Collections;
 
 /// <summary>
-/// Rocket.
+/// BulletController class manages bullet behaviour
+/// 
+/// @author - Dedie K.
+/// @version - 0.0.1
+/// 
+/// 
 /// </summary>
-//[RequireComponent(typeof(Rigidbody2D))]
+/// 
 public class Bullet : MonoBehaviour {
 
+	/// <summary>
+	/// The player gameobject
+	/// </summary>
 	private GameObject player;
 
+	/// <summary>
+	/// Direction bullet is fired in
+	/// </summary>
 	private Vector3 fireDirection;
 
+	/// <summary>
+	/// Speed at which bullet travels
+	/// </summary>
 	private float bulletSpeed;
 
-	[SerializeField]
-	private string isFiredDomain;
+	/// <summary>
+	/// Name of quad bullet was fired in
+	/// </summary>
+	private string quadName;
 
+	/// <summary>
+	/// Bullet state of having been fired
+	/// </summary>
 	public bool isFired;
 
 
@@ -23,38 +42,21 @@ public class Bullet : MonoBehaviour {
 	/// <summary>
 	/// Sets fireDirection and sets isFIred to true
 	/// </summary>
-	/// <param name="shootDirection">Vector calculated from player to mouse position. Determines bullet trajectory.</param>
+	/// 
+	/// <param name= "shootDirection"> Vector calculated from player to mouse position. Determines bullet trajectory.</param>
+	/// <param name = "firedDomain"> name of quad Bullet was instantiated within </param>
+	/// 
 	public void fireBullet(Vector3 shootDirection, string firedDomain)
 	{
 		fireDirection = shootDirection;
-		//fireDirection.Normalize ();
 		isFired = true;
-
-		isFiredDomain = firedDomain;
+		quadName = firedDomain;
 
 	}	
 
-
-	private void OnTriggerEnter(Collider other)
-	{
-		
-		if (other.gameObject.tag == "Enemy")
-		{
-			other.gameObject.GetComponent<EnemyBehaviour>().isShot();
-			player.gameObject.GetComponent<PlayerBehaviour> ().increaseScore ();
-		}
-
-	}
-
-	private void OnTriggerExit(Collider other)
-	{
-		if ((other.gameObject.name == isFiredDomain) && (gameObject.name != "Sprite_Bullet")) 
-		{
-			Debug.Log("FireDirection Before: " + fireDirection.x + ", " + fireDirection.y);
-			fireDirection.x = (-1) * fireDirection.x;
-		}
-	}
-
+	/// <summary>
+	/// Destroys bullet
+	/// </summary>
 	private void destroyBullet()
 	{
 		if (gameObject.name == "Sprite_Bullet(Clone)") 
@@ -63,9 +65,30 @@ public class Bullet : MonoBehaviour {
 		}
 	}
 
+
+	private void OnTriggerEnter(Collider other)
+	{
+		
+		if (other.gameObject.tag == "Enemy")
+		{
+			other.gameObject.GetComponent<Enemy>().isShot();
+		}
+
+	}
+
+	private void OnTriggerExit(Collider other)
+	{
+		/* If bullet exits quad it orginated in, reverse x trajectory */
+		if ((other.gameObject.name == quadName)) 
+		{
+			fireDirection.x = (-1) * fireDirection.x;
+		}
+	}
+		
+
 	// Use this for initialization
 	void Start () {
-		bulletSpeed = 30f;
+		bulletSpeed = 15f;
 		player = GameObject.Find ("Sprite_Player");
 
 	}
@@ -73,10 +96,8 @@ public class Bullet : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-
 		if (isFired) 
 		{
-			//Physics.IgnoreCollision (player.GetComponent<Collider>(), GetComponent<Collider>());
 			transform.Translate(fireDirection * Time.deltaTime * bulletSpeed);
 		}
 	

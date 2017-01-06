@@ -4,8 +4,7 @@ using System.Collections.Generic;
 
 
 /// <summary>
-/// PlayerBehaviour class is responsible for keeping track of the control settings and handling input
-/// of the relative player
+/// PlayerController class manages all player related responsibilities
 /// 
 /// @author - Dedie K.
 /// @version - 0.0.1
@@ -13,26 +12,20 @@ using System.Collections.Generic;
 /// 
 /// </summary>
 /// 
-public class PlayerBehaviour : MonoBehaviour {
+public class PlayerController : MonoBehaviour {
 
 	/// <summary>
-	/// The relative player being handled
+	/// The relative gameobject of player being handled
 	/// </summary>
 	private GameObject player;
 
-
 	/// <summary>
-	/// Variable affecting the coefficient of player movement
+	/// Player movement speed modifier
 	/// </summary>
-	private int motionCoeff;
+	private float playerSpeed;
 
 	/// <summary>
-	/// The bullet speed.
-	/// </summary>
-	private float bulletSpeed;
-
-	/// <summary>
-	/// The rocket sprite contained by the player
+	/// Prefab of player bullet sprite
 	/// </summary>
 	private GameObject bulletPrefab;
 
@@ -42,46 +35,41 @@ public class PlayerBehaviour : MonoBehaviour {
 	private GameObject bulletInstance;
 
 	/// <summary>
-	/// Vector in direction from player sprite to mouse position
+	/// Vector in direction from player to mouse position
 	/// </summary>
-	[SerializeField]
 	private Vector3 shootVector;
 
 	/// <summary>
 	/// Name of the quad that player is currently located in.
 	/// </summary>
-	[SerializeField]
-	private string quadLocation;
+	private string quadName;
 
 	/// <summary>
 	/// the Player score
 	/// </summary>
-	[SerializeField]
-	private int playerScore;
+	private int player_NumScore;
 
 	/// <summary>
-	/// Text of player score
+	/// UI gameobject of player number score
 	/// </summary>
-	private GameObject scoreText;
-	private Text score;
+	private GameObject UI_NumScore;
 
-
-	private float verticalExtent;
-	private float horizontalExtent;
+	/// <summary>
+	/// Text of player number score
+	/// </summary>
+	private Text numScoreText;
 
 
 	/// <summary>
 	/// Handles the input of player character.
 	/// Maintains character momentum, as values are constantly updated, rather than
 	/// only on press or release.
-	/// 
-	/// @param 
 	/// </summary>
 	private void handleMovement()
 	{
 		
-		float vMotion = Input.GetAxis ("Vertical") * motionCoeff;
-		float hMotion = Input.GetAxis ("Horizontal") * motionCoeff;
+		float vMotion = Input.GetAxis ("Vertical") * playerSpeed;
+		float hMotion = Input.GetAxis ("Horizontal") * playerSpeed;
 		vMotion *= Time.deltaTime;
 		hMotion *= Time.deltaTime;
 
@@ -91,43 +79,49 @@ public class PlayerBehaviour : MonoBehaviour {
 	private void handleFiring()
 	{
 
-		//Left Click handling. For firing standard bullets
+		/* 
+		 * Left Click handler, for bullet firing 
+		*/
 		if (Input.GetMouseButtonDown(0)) 
 		{	
-			int layerMask = 1 << 5;
+			
+			/* Initialise values to store raycast */
 			RaycastHit rayHit;
-			RaycastHit playerRayHit;
-
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			Ray playerRay = new Ray (transform.position, transform.forward);
+			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
 
-			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000, layerMask);
-			bool playerRayCheck = Physics.Raycast (playerRay, out playerRayHit, 1000, layerMask);
-
-			if (mouseRayCheck && playerRayCheck) 
+			/* If ray makes contact with world, determine vector between mouseposition and player */
+			if (mouseRayCheck)
 			{
+				/* Determine x, y coordinates using ray from mousePosition to player position */
 				float xValue = rayHit.point.x - transform.position.x;
 				float yValue = rayHit.point.y - transform.position.y;
 
+				/* Assign values to shootVector variable */
 				shootVector.x = xValue;
 				shootVector.y = yValue;;
 
+				/* Normalize to bound vector values and make scaling uniform */
 				shootVector.Normalize();
 
+				/* Instantiate bullet using existing prefab, at current player location */
 				bulletInstance = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
-				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadLocation);
+				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadName);
 
-				Destroy (bulletInstance, 1.5f);
+				/* Destroy the particular instance after 1.5 seconds */
+				Destroy (bulletInstance, 0.5f);
 			}
 		}
 
-		//Right Click handling. For placing Whisper
+
+		/* 
+		 * Right Click handler, for placing Whisper
+		 */
 		if (Input.GetMouseButtonDown (1)) 
 		{
 			
 			RaycastHit rayHit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
 
 
@@ -139,17 +133,25 @@ public class PlayerBehaviour : MonoBehaviour {
 	}
 
 
+	/// <summary>
+	/// Upon taking damage, game pauses and restart menu appears
+	/// </summary>
 	private void handleDamage()
 	{
 		Time.timeScale = 0;
 	}
 
+
+	/// <summary>
+	/// Increases player score
+	/// </summary>
 	public void increaseScore ()
 	{
-		playerScore++;
-		score = scoreText.gameObject.GetComponent<Text>();
-		score.text = "Score: " + playerScore;
+		player_NumScore++;
+		numScoreText = UI_NumScore.gameObject.GetComponent<Text>();
+		numScoreText.text = "Score: " + player_NumScore;
 	}
+
 
 	/// <summary>
 	/// Constrains the player position within the camera viewport
@@ -180,31 +182,27 @@ public class PlayerBehaviour : MonoBehaviour {
 	{
 		if (other.gameObject.tag == "Quad") 
 		{
-			quadLocation = other.gameObject.name;
+			quadName = other.gameObject.name;
 		}
 	}
 
 	// Use this for initialization
 	void Start () {
 
-		//getCameraBounds();
+		/* Player values */
+		playerSpeed = 18f;
+		player_NumScore = 0;
 
-		motionCoeff = 18;
-		bulletSpeed = 2;
-		bulletPrefab = GameObject.Find ("Sprite_Bullet");
+		/* Bullet values */
+		bulletPrefab = GameObject.Find("Sprite_Bullet");
 
-		playerScore = 0;
-
-		scoreText = GameObject.Find("Player_Score");
+		/* UI values */
+		UI_NumScore = GameObject.Find("Player_NumScore");
 
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
-		Vector2 pos = transform.position;
-		transform.position = pos;
-
 
 		handleMovement();
 		handleFiring ();
