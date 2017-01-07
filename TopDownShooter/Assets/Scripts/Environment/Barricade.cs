@@ -12,11 +12,12 @@ using System.Collections;
 ///
 abstract public class Barricade : MonoBehaviour, IQuadChild {
 
+
 	/// <summary>
-	/// Target that barricade moves towards
+	/// The offset target position.
 	/// </summary>
 	[SerializeField]
-	protected GameObject target;
+	protected Vector2 offsetTargetPosition;
 
 	/// <summary>
 	/// Barricade state of being in motion
@@ -39,19 +40,21 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	protected float barricadeOffset;
 
 	/// <summary>
-	/// Moves barricade towards target destination
+	/// Tells barricade to move in a downwards direction
 	/// </summary>
-	protected abstract void seekTarget();
+	protected abstract void fall();
 
 	/// <summary>
-	/// Sets the target for Barricade to move towards
+	/// Handles enemy behaviour when hit by bullet
 	/// </summary>
-	protected abstract void setTarget();
+	public virtual void OnTriggerEnter(Collider other)
+	{
 
-	/// <summary>
-	/// Sets the x axis offset of barricade
-	/// </summary>
-	protected abstract void setOffset();
+		if (other.gameObject.tag == "Basin")
+		{
+			Destroy (this.gameObject);
+		}
+	}
 
 	/// <summary>
 	/// IQuadChild Method for halting motion

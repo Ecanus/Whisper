@@ -123,12 +123,24 @@ public class PlayerController : MonoBehaviour {
 			RaycastHit rayHit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
+			bool quadTag = (rayHit.transform.tag == "Quad");
+
+			if (mouseRayCheck && quadTag) 
+			{
+				string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
+				Debug.Log (whisperQuadName);
+
+				GameObject whisperObject = GameObject.Find (whisperQuadName);
+
+				Image whisperImage = whisperObject.GetComponent<Image>();
+				Color whisperColor = whisperImage.color;
+				whisperColor.a = 0f;
+				whisperImage.color = whisperColor;
+
+				//whisperImage.SetActive (false);
+			}
 
 
-			//if(rayHit.collider.isTrigger)
-
-			GameObject whisperImage = GameObject.Find ("WhisperIndicator_Top");
-			whisperImage.SetActive (false);
 		}
 	}
 
@@ -190,7 +202,7 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 
 		/* Player values */
-		playerSpeed = 18f;
+		playerSpeed = 12f;
 		player_NumScore = 0;
 
 		/* Bullet values */
