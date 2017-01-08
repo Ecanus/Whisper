@@ -17,12 +17,19 @@ public class QuadController : MonoBehaviour {
 	/// <summary>
 	/// Speed of quad texture scrolling
 	/// </summary>
+	[SerializeField]
 	private float scrollSpeed;
 
 	/// <summary>
 	/// Offset time for smooth scrolling resume on player reentry
 	/// </summary>
+	[SerializeField]
 	private float currentOffsetTime;
+
+	/// <summary>
+	/// The whisper associated with this quad
+	/// </summary>
+	private GameObject thisWhisper;
 
 
 	/// <summary>
@@ -54,17 +61,22 @@ public class QuadController : MonoBehaviour {
 	private void OnTriggerStay(Collider other)
 	{
 
-		if (other.gameObject.tag == "Player")
+		if (other.gameObject.tag == "Player")// || thisWhisper.GetComponent<WhisperController>().getState())
 		{
 			scrollImage();
 			actuateAllChildren();
 		}
 
+		if (thisWhisper.GetComponent<WhisperController>().getState()) 
+		{
+			scrollImage();
+			actuateAllChildren();
+		}
 	}
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.gameObject.tag == "Player") 
+		if (other.gameObject.tag == "Player" || !thisWhisper.GetComponent<WhisperController>().getState()) 
 		{
 			haltAllChildren();
 		}
@@ -75,6 +87,8 @@ public class QuadController : MonoBehaviour {
 
 		scrollSpeed = 0.2f;
 		currentOffsetTime = Time.deltaTime;
+
+		thisWhisper = GameObject.Find(gameObject.name + "_Whisper");
 	}
 	
 	// Update is called once per frame

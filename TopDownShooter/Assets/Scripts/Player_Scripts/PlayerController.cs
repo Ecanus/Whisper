@@ -128,16 +128,9 @@ public class PlayerController : MonoBehaviour {
 			if (mouseRayCheck && quadTag) 
 			{
 				string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
-				Debug.Log (whisperQuadName);
-
 				GameObject whisperObject = GameObject.Find (whisperQuadName);
 
-				Image whisperImage = whisperObject.GetComponent<Image>();
-				Color whisperColor = whisperImage.color;
-				whisperColor.a = 0f;
-				whisperImage.color = whisperColor;
-
-				//whisperImage.SetActive (false);
+				whisperObject.gameObject.GetComponent<WhisperController>().activateWhisper();
 			}
 
 

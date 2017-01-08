@@ -47,7 +47,7 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Handles enemy behaviour when hit by bullet
 	/// </summary>
-	public virtual void OnTriggerEnter(Collider other)
+	public virtual void OnTriggerStay(Collider other)
 	{
 
 		if (other.gameObject.tag == "Basin")

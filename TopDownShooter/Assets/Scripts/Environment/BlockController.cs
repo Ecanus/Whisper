@@ -26,24 +26,26 @@ public class BlockController : Barricade {
 	/// </summary>
 	private void setOffset()
 	{
-		if (transform.parent != null) 
-		{
-			barricadeOffset = 1f;
+		int offset = Random.Range (0, 3);
 
-			Vector3 pos = transform.position;
-			Debug.Log ("Second Pos is: " + pos);
-			//pos.x += barricadeOffset;
-			//transform.Translate (pos);
-		
+		switch (offset) 
+		{
+		case 0:
+			transform.Translate (Vector2.left * 1.5f);
+			break;
+		case 1:
+			break;
+		case 2:
+			transform.Translate (Vector2.right * 1.5f);
+			break;
 		}
 
-
 	}
+
 
 	// Use this for initialization
 	void Start () {
 
-		Debug.Log ("First Pos is: " + transform.position);
 		setOffset();
 		fallSpeed = 2f;
 
