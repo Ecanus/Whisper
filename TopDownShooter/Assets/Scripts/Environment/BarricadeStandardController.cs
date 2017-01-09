@@ -24,7 +24,6 @@ public class BarricadeStandardController : Barricade {
 	// Use this for initialization
 	void Start () {
 
-		//setOffset();
 		fallSpeed = 2f;
 
 	}

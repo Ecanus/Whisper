@@ -20,17 +20,17 @@ public class EnemyDigitController : Enemy {
 		Vector2 from = transform.position;
 		Vector2 to = target.transform.position;
 
-		transform.position = Vector2.Lerp (from, to, fallSpeed);;
+		transform.position = Vector2.Lerp (from, to, (Time.deltaTime * fallSpeed));
+		//transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
 	}
-
 
 
 	void Start () {
 
-		target = GameObject.Find("Sprite_Player");
 		player = GameObject.Find("Sprite_Player");
+		target = player;
 
-		fallSpeed = 0.02f;
+		fallSpeed = 1.2f;
 		healthValue = 1;
 	}
 	

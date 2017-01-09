@@ -15,6 +15,7 @@ public class Bullet : MonoBehaviour {
 	/// <summary>
 	/// Direction bullet is fired in
 	/// </summary>
+	[SerializeField]
 	private Vector3 fireDirection;
 
 	/// <summary>
@@ -25,6 +26,7 @@ public class Bullet : MonoBehaviour {
 	/// <summary>
 	/// Name of quad bullet was fired in
 	/// </summary>
+	[SerializeField]
 	private string quadName;
 
 	/// <summary>

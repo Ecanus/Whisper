@@ -14,30 +14,16 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 
 
 	/// <summary>
-	/// The offset target position.
-	/// </summary>
-	[SerializeField]
-	protected Vector2 offsetTargetPosition;
-
-	/// <summary>
 	/// Barricade state of being in motion
 	/// </summary>
 	protected bool isMoving;
 
-	/// <summary>
-	/// Barricade state of having a target to seek
-	/// </summary>
-	protected bool isTargetSet;
 
 	/// <summary>
 	/// Speed at which Barricade falls towards bottom of screen
 	/// </summary>
 	protected float fallSpeed;
 
-	/// <summary>
-	/// Randomised x axis offset of barricade
-	/// </summary>
-	protected float barricadeOffset;
 
 	/// <summary>
 	/// Tells barricade to move in a downwards direction

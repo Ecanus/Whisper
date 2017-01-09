@@ -2,26 +2,45 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// WhisperController class manages whisper functionality
+/// 
+/// @author - Dedie K.
+/// @version - 0.0.1
+/// 
+/// 
+/// </summary>
+///
 public class WhisperController : MonoBehaviour {
 
 
-	private bool whisperState;
+	private PlayerController player;
 
+	/// <summary>
+	/// Activates the whisper via coroutine
+	/// </summary>
 	public void activateWhisper()
 	{
-		StartCoroutine (whisperStart() );
+		if (player.getWhisperPlaceable ()) 
+		{
+			StartCoroutine (whisperStart ());
+		}
 	}
 
-	public IEnumerator whisperStart()
+	/// <summary>
+	/// Whisper becomes functioning for a period of time
+	/// </summary>
+	/// <returns>The start.</returns>
+	private IEnumerator whisperStart()
 	{
-		
+
+
 		Image whisperImage = gameObject.GetComponent<Image>();
 		Color whisperColor = whisperImage.color;
 		whisperColor.a = 1f;
 		whisperImage.color = whisperColor;
 
-		gameObject.GetComponent<BoxCollider> ().enabled = true;
-		whisperState = true;
+		gameObject.GetComponent<BoxCollider>().center = new Vector3(0f,0f,0f);
 
 		for (float f = 1f; f >= -0.1f; f -= 0.03f) {
 
@@ -30,20 +49,16 @@ public class WhisperController : MonoBehaviour {
 			yield return new WaitForSeconds(0.05f);
 		}
 
-		gameObject.GetComponent<BoxCollider> ().enabled = false;
-		whisperState = false;
-	}
+		gameObject.GetComponent<BoxCollider> ().center = new Vector3(0f,0f,100f);
+		player.setWhisperPlaceable (true);
 
-	public bool getState()
-	{
-		return whisperState;
 	}
+		
 
 
 	// Use this for initialization
 	void Start () {
-
-		whisperState = false;
+		player = GameObject.Find("Sprite_Player").GetComponent<PlayerController>();
 	}
 	
 	// Update is called once per frame

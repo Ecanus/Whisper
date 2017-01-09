@@ -35,6 +35,12 @@ public class PlayerController : MonoBehaviour {
 	private GameObject bulletInstance;
 
 	/// <summary>
+	/// The menu manager.
+	/// </summary>
+	[SerializeField]
+	private MenuManager menuManager;
+
+	/// <summary>
 	/// Vector in direction from player to mouse position
 	/// </summary>
 	private Vector3 shootVector;
@@ -42,6 +48,7 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// Name of the quad that player is currently located in.
 	/// </summary>
+	[SerializeField]
 	private string quadName;
 
 	/// <summary>
@@ -59,6 +66,15 @@ public class PlayerController : MonoBehaviour {
 	/// </summary>
 	private Text numScoreText;
 
+	/// <summary>
+	/// State of being able to place a whisper onscreen
+	/// </summary>
+	private bool canPlaceWhisper;
+
+	/// <summary>
+	/// State of the game being paused
+	/// </summary>
+	private bool isPaused;
 
 	/// <summary>
 	/// Handles the input of player character.
@@ -73,7 +89,7 @@ public class PlayerController : MonoBehaviour {
 		vMotion *= Time.deltaTime;
 		hMotion *= Time.deltaTime;
 
-		transform.Translate (hMotion, vMotion, 0);
+		transform.Translate (hMotion, vMotion, 0f);
 	}
 
 	private void handleFiring()
@@ -91,7 +107,7 @@ public class PlayerController : MonoBehaviour {
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
 
 			/* If ray makes contact with world, determine vector between mouseposition and player */
-			if (mouseRayCheck)
+			if (mouseRayCheck && !isPaused)
 			{
 				/* Determine x, y coordinates using ray from mousePosition to player position */
 				float xValue = rayHit.point.x - transform.position.x;
@@ -109,7 +125,7 @@ public class PlayerController : MonoBehaviour {
 				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadName);
 
 				/* Destroy the particular instance after 1.5 seconds */
-				Destroy (bulletInstance, 0.5f);
+				Destroy (bulletInstance, 1.5f);
 			}
 		}
 
@@ -125,25 +141,52 @@ public class PlayerController : MonoBehaviour {
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
 			bool quadTag = (rayHit.transform.tag == "Quad");
 
-			if (mouseRayCheck && quadTag) 
+			if (mouseRayCheck && quadTag && !isPaused) 
 			{
 				string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
 				GameObject whisperObject = GameObject.Find (whisperQuadName);
 
 				whisperObject.gameObject.GetComponent<WhisperController>().activateWhisper();
+				canPlaceWhisper = false;
 			}
 
 
 		}
 	}
 
+	/// <summary>
+	/// Gets the state of the whisper.
+	/// </summary>
+	/// <returns><c>true</c>, if whisper state was gotten, <c>false</c> otherwise.</returns>
+	public bool getWhisperPlaceable()
+	{
+		return canPlaceWhisper;
+	}
+
+	/// <summary>
+	/// Sets the state of the whisper.
+	/// </summary>
+	public void setWhisperPlaceable(bool newState)
+	{
+		canPlaceWhisper = newState;
+	}
+
+	public bool getIsPaused()
+	{
+		return isPaused;
+	}
+
+	public void setIsPaused(bool newState)
+	{
+		isPaused = newState;
+	}
 
 	/// <summary>
 	/// Upon taking damage, game pauses and restart menu appears
 	/// </summary>
 	private void handleDamage()
 	{
-		Time.timeScale = 0;
+		menuManager.endGame ();
 	}
 
 
@@ -171,6 +214,7 @@ public class PlayerController : MonoBehaviour {
 		pos.y = Mathf.Clamp(pos.y, 0.05f, 0.95f);
 		transform.position = Camera.main.ViewportToWorldPoint(pos);
 
+
 	}
 
 
@@ -179,12 +223,13 @@ public class PlayerController : MonoBehaviour {
 
 		if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Barricade")
 		{
-			//handleDamage();
+			handleDamage();
 		}
 	}
 
 	private void OnTriggerStay(Collider other)
 	{
+
 		if (other.gameObject.tag == "Quad") 
 		{
 			quadName = other.gameObject.name;
@@ -197,6 +242,8 @@ public class PlayerController : MonoBehaviour {
 		/* Player values */
 		playerSpeed = 12f;
 		player_NumScore = 0;
+		canPlaceWhisper = true;
+		isPaused = false;
 
 		/* Bullet values */
 		bulletPrefab = GameObject.Find("Sprite_Bullet");

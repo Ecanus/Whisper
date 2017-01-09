@@ -70,7 +70,7 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	}
 
 	/// <summary>
-	/// IQuadChild Methord fo actuating motion
+	/// IQuadChild Methord for actuating motion
 	/// </summary>
 	public void actuate()
 	{
