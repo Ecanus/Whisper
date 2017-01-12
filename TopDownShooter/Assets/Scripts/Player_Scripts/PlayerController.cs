@@ -54,12 +54,17 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// the Player score
 	/// </summary>
-	private int player_NumScore;
+	private float player_NumScore;
+	private float score_Count;
 
 	/// <summary>
 	/// UI gameobject of player number score
 	/// </summary>
+	[SerializeField]
 	private GameObject UI_NumScore;
+
+	[SerializeField]
+	private Slider scoreSlider;
 
 	/// <summary>
 	/// Text of player number score
@@ -186,18 +191,21 @@ public class PlayerController : MonoBehaviour {
 	/// </summary>
 	private void handleDamage()
 	{
-		menuManager.endGame ();
+		menuManager.lostGame ();
 	}
 
 
 	/// <summary>
 	/// Increases player score
 	/// </summary>
-	public void increaseScore ()
+	public void increaseScore (float value)
 	{
-		player_NumScore++;
+		player_NumScore += value;
+
 		numScoreText = UI_NumScore.gameObject.GetComponent<Text>();
-		numScoreText.text = "Score: " + player_NumScore;
+		numScoreText.text = player_NumScore + "%";
+
+		scoreSlider.value = player_NumScore;
 	}
 
 
@@ -247,9 +255,6 @@ public class PlayerController : MonoBehaviour {
 
 		/* Bullet values */
 		bulletPrefab = GameObject.Find("Sprite_Bullet");
-
-		/* UI values */
-		UI_NumScore = GameObject.Find("Player_NumScore");
 
 	}
 	

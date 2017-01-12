@@ -14,6 +14,11 @@ using System.Collections;
 abstract public class Enemy : MonoBehaviour, IQuadChild {
 
 	/// <summary>
+	/// Points awarded to player when this enemy is defeated
+	/// </summary>
+	public static float enemyValue = 1f;
+
+	/// <summary>
 	/// Player gameobject
 	/// </summary>
 	[SerializeField]
@@ -56,7 +61,7 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 
 		if ((healthValue <= 0))
 		{
-			player.gameObject.GetComponent<PlayerController>().increaseScore();
+			player.gameObject.GetComponent<PlayerController>().increaseScore(enemyValue);
 			Destroy (this.gameObject);
 		}
 	}
