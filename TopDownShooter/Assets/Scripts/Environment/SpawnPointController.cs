@@ -85,8 +85,8 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 		blockPrefab = GameObject.Find ("Sprite_BarricadeBlock");
 
 		InvokeRepeating("spawnEnemy", 1f, 0.5f);
-		//InvokeRepeating ("spawnBarricade", 1f, 1f);
-		InvokeRepeating ("spawnBlock", 1f, 1f);
+		InvokeRepeating ("spawnBarricade", 1f, 1f);
+		//InvokeRepeating ("spawnBlock", 1f, 1f);
 
 	}
 	

@@ -22,7 +22,7 @@ public class TitleManager : MonoBehaviour {
 	{
 		Color backgroundColor = sliderBackground.color;
 		if (activate) {
-			backgroundColor.a = 0.04f;
+			backgroundColor.a = 0.1f;
 			sliderBackground.color = backgroundColor;
 		} else {
 			backgroundColor.a = 0f;
@@ -88,6 +88,7 @@ public class TitleManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		Time.timeScale = 1;
 		slider.onValueChanged.AddListener(delegate {sliderValueHandle();});
 	}
 	
