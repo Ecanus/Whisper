@@ -39,32 +39,59 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Speed at which Enemy falls towards bottom of screen
 	/// </summary>
+	[SerializeField]
 	protected float fallSpeed;
+
+	/// <summary>
+	/// Enemy state of being in motion
+	/// </summary>
+	[SerializeField]
+	protected bool isMoving;
+
+	[SerializeField]
+	protected bool isKilled;
 
 	/// <summary>
 	/// Moves enemy towards target destination
 	/// </summary>
 	protected abstract void seekTarget();
 
-
-	/// <summary>
-	/// Enemy state of being in motion
-	/// </summary>
-	protected bool isMoving;
-
 	/// <summary>
 	/// Handles enemy behaviour when hit by bullet
 	/// </summary>
 	public virtual void isShot()
 	{
+		/* If hit, decrease health */
 		healthValue--;
 
 		if ((healthValue <= 0))
 		{
 			player.gameObject.GetComponent<PlayerController>().increaseScore(enemyValue);
-			Destroy (this.gameObject);
+			isKilled = true;
 		}
 	}
+		
+
+	/// <summary>
+	/// Fades the out enemy upon defeat. Destroys object once fade is complete
+	/// </summary>
+	protected void fadeOut()
+	{
+		//gameObject.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("Enemy_Images/Enemy_Digit_Defated");
+		Color enemyColor = gameObject.GetComponent<SpriteRenderer> ().color;
+		enemyColor = new Color (1f, 1f, 1f, Mathf.SmoothStep (1f, 0f, 0.5f));
+		gameObject.GetComponent<SpriteRenderer> ().color = enemyColor;
+		StartCoroutine ("destroyEnemy");
+
+	}
+
+
+	private IEnumerator destroyEnemy()
+	{
+		yield return new WaitForSeconds (0.060f);
+		Destroy (this.gameObject);
+	}
+		
 
 	/// <summary>
 	/// IQuadChild Method for halting motion

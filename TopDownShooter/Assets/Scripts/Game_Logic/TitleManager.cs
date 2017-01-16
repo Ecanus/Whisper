@@ -3,21 +3,45 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+/// <summary>
+/// TitleManager handles title screen UI functionality and state management
+/// 
+/// @author - Dedie K.
+/// @version - 0.0.1
+/// 
+/// </summary>
+///
 public class TitleManager : MonoBehaviour {
 
+	/// <summary>
+	/// The slider background.
+	/// </summary>
 	[SerializeField]
 	private Image sliderBackground;
 
+	/// <summary>
+	/// The slider.
+	/// </summary>
 	[SerializeField]
 	private Slider slider;
 
+	/// <summary>
+	/// The start game text.
+	/// </summary>
 	[SerializeField]
 	private Text startGameText;
 
+	/// <summary>
+	/// The exit game text.
+	/// </summary>
 	[SerializeField]
 	private Text exitGameText;
 
 
+	/// <summary>
+	/// Reveals slider background on mouse hover
+	/// </summary>
+	/// <param name="activate">If set to <c>true</c> activate.</param>
 	public void sliderBackgroundHandle(bool activate)
 	{
 		Color backgroundColor = sliderBackground.color;
@@ -31,6 +55,9 @@ public class TitleManager : MonoBehaviour {
 	}
 
 
+	/// <summary>
+	/// Handles text display based on slider value
+	/// </summary>
 	public void sliderValueHandle()
 	{
 	
@@ -57,6 +84,9 @@ public class TitleManager : MonoBehaviour {
 
 	}
 
+	/// <summary>
+	/// Handles Game state based on slider value
+	/// </summary>
 	private void screenTransitionHandle()
 	{
 		if (Input.GetMouseButtonUp (0) && (slider.value == slider.maxValue)) 
@@ -70,20 +100,27 @@ public class TitleManager : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Loads actual game after some time
+	/// </summary>
+	/// <returns>The game.</returns>
 	private IEnumerator LoadGame()
 	{
 		//loadingImage.SetActive(true);
 		yield return new WaitForSeconds(0.5f);
-		SceneManager.LoadScene(1);
+		SceneManager.LoadScene(2);
 	}
 
+	/// <summary>
+	/// Exits entire game after some time
+	/// </summary>
+	/// <returns>The game.</returns>
 	private IEnumerator ExitGame()
 	{
 		yield return new WaitForSeconds(1f);
 		UnityEditor.EditorApplication.isPlaying = false;
 		Application.Quit();
 	}
-
 
 	// Use this for initialization
 	void Start () {

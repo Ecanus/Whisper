@@ -21,9 +21,9 @@ public class EnemyDigitController : Enemy {
 		Vector2 to = target.transform.position;
 
 		transform.position = Vector2.Lerp (from, to, (Time.deltaTime * fallSpeed));
-		//transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
-	}
 
+	}
+		
 
 	void Start () {
 
@@ -37,11 +37,15 @@ public class EnemyDigitController : Enemy {
 
 	void Update () {
 	
-		if (isMoving) 
-		{
-			seekTarget();
+		if (isMoving) {
+			seekTarget ();
 		} 
 
+		if (isKilled) 
+		{
+			gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.getDigitDefeatedSprite ();
+			fadeOut();
+		}
 	}
 
 }

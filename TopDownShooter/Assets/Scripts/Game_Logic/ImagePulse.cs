@@ -2,6 +2,14 @@
 using UnityEngine.UI;
 using System.Collections;
 
+/// <summary>
+/// ImagePulse script provides basic image dimming functionality for UI elements
+/// 
+/// @author - Dedie K.
+/// @version - 0.0.1
+/// 
+/// </summary>
+///
 public class ImagePulse : MonoBehaviour {
 
 	[SerializeField]

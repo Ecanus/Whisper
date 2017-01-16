@@ -20,6 +20,11 @@ public class PlayerController : MonoBehaviour {
 	private GameObject player;
 
 	/// <summary>
+	/// The firing sound.
+	/// </summary>
+	private AudioSource whisperPlacedSound;
+
+	/// <summary>
 	/// Player movement speed modifier
 	/// </summary>
 	private float playerSpeed;
@@ -27,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// Prefab of player bullet sprite
 	/// </summary>
+	[SerializeField]
 	private GameObject bulletPrefab;
 
 	/// <summary>
@@ -54,8 +60,8 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// the Player score
 	/// </summary>
-	private float player_NumScore;
-	private float score_Count;
+	private float playerNumScore;
+	private float actualScore;
 
 	/// <summary>
 	/// UI gameobject of player number score
@@ -130,7 +136,7 @@ public class PlayerController : MonoBehaviour {
 				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadName);
 
 				/* Destroy the particular instance after 1.5 seconds */
-				Destroy (bulletInstance, 1.5f);
+				Destroy (bulletInstance, 0.25f);
 			}
 		}
 
@@ -140,7 +146,7 @@ public class PlayerController : MonoBehaviour {
 		 */
 		if (Input.GetMouseButtonDown (1)) 
 		{
-			
+			whisperPlacedSound.Play();
 			RaycastHit rayHit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
@@ -200,12 +206,15 @@ public class PlayerController : MonoBehaviour {
 	/// </summary>
 	public void increaseScore (float value)
 	{
-		player_NumScore += value;
+		playerNumScore += value;
+		//actualScore += 1;
+		Barricade.fallSpeed += 0.015f;
+		playerSpeed += 0.015f;
 
 		numScoreText = UI_NumScore.gameObject.GetComponent<Text>();
-		numScoreText.text = player_NumScore + "%";
+		numScoreText.text = playerNumScore + "%";
 
-		scoreSlider.value = player_NumScore;
+		scoreSlider.value = playerNumScore;
 	}
 
 
@@ -248,13 +257,13 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 
 		/* Player values */
-		playerSpeed = 12f;
-		player_NumScore = 0;
+		playerSpeed = 5f;
+		playerNumScore = 0;
+		actualScore = 0;
 		canPlaceWhisper = true;
 		isPaused = false;
 
-		/* Bullet values */
-		bulletPrefab = GameObject.Find("Sprite_Bullet");
+		whisperPlacedSound = GetComponent<AudioSource>();
 
 	}
 	
@@ -262,7 +271,7 @@ public class PlayerController : MonoBehaviour {
 	void Update () {
 
 		handleMovement();
-		handleFiring ();
+		handleFiring();
 		cameraConstrain ();
 
 	}

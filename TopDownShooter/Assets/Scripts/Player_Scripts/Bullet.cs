@@ -21,6 +21,7 @@ public class Bullet : MonoBehaviour {
 	/// <summary>
 	/// Speed at which bullet travels
 	/// </summary>
+	[SerializeField]
 	private float bulletSpeed;
 
 	/// <summary>
@@ -33,7 +34,6 @@ public class Bullet : MonoBehaviour {
 	/// Bullet state of having been fired
 	/// </summary>
 	public bool isFired;
-
 
 
 	/// <summary>
@@ -50,14 +50,12 @@ public class Bullet : MonoBehaviour {
 		quadName = firedDomain;
 
 	}	
-
-
-
+		
 
 	private void OnTriggerEnter(Collider other)
 	{
 		
-		if (other.gameObject.tag == "Enemy")
+		if (other.gameObject.CompareTag("Enemy"))
 		{
 			other.gameObject.GetComponent<Enemy>().isShot();
 		}

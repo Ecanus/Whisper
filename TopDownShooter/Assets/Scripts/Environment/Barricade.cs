@@ -22,7 +22,7 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Speed at which Barricade falls towards bottom of screen
 	/// </summary>
-	protected float fallSpeed;
+	public static float fallSpeed = 2f;
 
 
 	/// <summary>
@@ -36,7 +36,7 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	public virtual void OnTriggerStay(Collider other)
 	{
 
-		if (other.gameObject.tag == "Basin")
+		if (other.gameObject.CompareTag("Basin"))
 		{
 			Destroy (this.gameObject);
 		}

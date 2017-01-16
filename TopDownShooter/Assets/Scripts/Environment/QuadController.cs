@@ -37,6 +37,9 @@ public class QuadController : MonoBehaviour {
 		GetComponent<Renderer>().material.mainTextureOffset = offset;
 	}
 
+	/// <summary>
+	/// Calls the halt() method of all children of this Quad
+	/// </summary>
 	private void haltAllChildren()
 	{
 		foreach (Transform child in transform) 
@@ -45,6 +48,9 @@ public class QuadController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Calls the actuate() method of all children of this Quad
+	/// </summary>
 	private void actuateAllChildren()
 	{
 		foreach (Transform child in transform) 
@@ -53,11 +59,14 @@ public class QuadController : MonoBehaviour {
 		}
 	}
 
+	/// <summary>
+	/// Calls the actuate() method of only non-enemy children of this Quad
+	/// </summary>
 	private void actuateAllBarricades()
 	{
 		foreach (Transform child in transform) 
 		{
-			if (child.tag != "Enemy") 
+			if (!child.CompareTag("Enemy")) 
 			{
 				child.GetComponent<IQuadChild> ().actuate ();
 			}
@@ -67,13 +76,13 @@ public class QuadController : MonoBehaviour {
 	private void OnTriggerStay(Collider other)
 	{
 
-		if (other.gameObject.tag == "Player")
+		if (other.gameObject.CompareTag ("Player"))
 		{
 			scrollImage();
 			actuateAllChildren();
 		}
 
-		if (other.gameObject.tag == "Whisper") 
+		if (other.gameObject.CompareTag("Whisper"))
 		{
 			actuateAllBarricades();
 		}
@@ -83,7 +92,7 @@ public class QuadController : MonoBehaviour {
 
 	private void OnTriggerExit(Collider other)
 	{
-		if (other.gameObject.tag == "Player" || other.gameObject.tag == "Whisper") 
+		if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Whisper")) 
 		{
 			haltAllChildren();
 		}

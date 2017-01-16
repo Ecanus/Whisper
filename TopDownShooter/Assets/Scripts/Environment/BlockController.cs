@@ -26,7 +26,7 @@ public class BlockController : Barricade {
 	/// </summary>
 	private void setOffset()
 	{
-		int offset = Random.Range (0, 3);
+		int offset = Random.Range (0, 6);
 
 		switch (offset) 
 		{
@@ -36,7 +36,16 @@ public class BlockController : Barricade {
 		case 1:
 			break;
 		case 2:
-			transform.Translate (Vector2.right * 1.5f);
+			transform.Translate (Vector2.right * 1.0f);
+			break;
+		case 3:
+			transform.Translate (Vector2.left * 1.0f);
+			break;
+		case 4:
+			transform.Translate (Vector2.right * 0.5f);
+			break;
+		case 5:
+			transform.Translate (Vector2.left * 0.5f);
 			break;
 		}
 
@@ -47,7 +56,6 @@ public class BlockController : Barricade {
 	void Start () {
 
 		setOffset();
-		fallSpeed = 2f;
 
 	}
 

@@ -23,9 +23,6 @@ public class BarricadeStandardController : Barricade {
 
 	// Use this for initialization
 	void Start () {
-
-		fallSpeed = 2f;
-
 	}
 	
 	// Update is called once per frame

@@ -14,6 +14,10 @@ using System.Collections;
 public class WhisperController : MonoBehaviour {
 
 
+	/// <summary>
+	/// The player controller component of the player gameobject
+	/// </summary>
+	[SerializeField]
 	private PlayerController player;
 
 	/// <summary>
@@ -33,7 +37,6 @@ public class WhisperController : MonoBehaviour {
 	/// <returns>The start.</returns>
 	private IEnumerator whisperStart()
 	{
-
 
 		Image whisperImage = gameObject.GetComponent<Image>();
 		Color whisperColor = whisperImage.color;
@@ -58,7 +61,7 @@ public class WhisperController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		player = GameObject.Find("Sprite_Player").GetComponent<PlayerController>();
+
 	}
 	
 	// Update is called once per frame
