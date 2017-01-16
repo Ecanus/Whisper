@@ -118,7 +118,7 @@ public class TitleManager : MonoBehaviour {
 	private IEnumerator ExitGame()
 	{
 		yield return new WaitForSeconds(1f);
-		UnityEditor.EditorApplication.isPlaying = false;
+		//UnityEditor.EditorApplication.isPlaying = false;
 		Application.Quit();
 	}
 

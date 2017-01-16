@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// The firing sound.
 	/// </summary>
-	private AudioSource whisperPlacedSound;
+	//private AudioSource whisperPlacedSound;
 
 	/// <summary>
 	/// Player movement speed modifier
@@ -146,7 +146,6 @@ public class PlayerController : MonoBehaviour {
 		 */
 		if (Input.GetMouseButtonDown (1)) 
 		{
-			whisperPlacedSound.Play();
 			RaycastHit rayHit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
@@ -209,7 +208,7 @@ public class PlayerController : MonoBehaviour {
 		playerNumScore += value;
 		//actualScore += 1;
 		Barricade.fallSpeed += 0.015f;
-		playerSpeed += 0.015f;
+		playerSpeed += 0.02f;
 
 		numScoreText = UI_NumScore.gameObject.GetComponent<Text>();
 		numScoreText.text = playerNumScore + "%";
@@ -262,8 +261,6 @@ public class PlayerController : MonoBehaviour {
 		actualScore = 0;
 		canPlaceWhisper = true;
 		isPaused = false;
-
-		whisperPlacedSound = GetComponent<AudioSource>();
 
 	}
 	
