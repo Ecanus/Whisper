@@ -73,6 +73,11 @@ public class MenuManager : MonoBehaviour {
 	[SerializeField]
 	private bool isPaused;
 
+	/// <summary>
+	/// State of player having been defeated
+	/// </summary>
+	[SerializeField]
+	private bool isDefeated;
 
 	/// <summary>
 	/// Reveals slider background on mouse hover
@@ -121,7 +126,7 @@ public class MenuManager : MonoBehaviour {
 	/// </summary>
 	private void handleInput()
 	{
-		if (Input.GetKeyDown(KeyCode.Escape)) 
+		if (Input.GetKeyDown(KeyCode.Escape) && !isDefeated) 
 		{
 			pauseGame();
 		}
@@ -165,6 +170,7 @@ public class MenuManager : MonoBehaviour {
 	public void lostGame()
 	{
 		player.GetComponent<PlayerController>().setIsPaused (true);
+		isDefeated = true;
 
 		pause_Panel.SetActive (false);
 		defeat_Panel.SetActive (true);
@@ -172,7 +178,7 @@ public class MenuManager : MonoBehaviour {
 		defeatAnim.enabled = true;
 		defeatAnim.Play ("DefeatMenuActivate");
 
-		Time.timeScale = 0;
+		Time.timeScale = 0.001f;
 	}
 
 	/// <summary>
@@ -180,7 +186,7 @@ public class MenuManager : MonoBehaviour {
 	/// </summary>
 	private void exitGame()
 	{
-		//UnityEditor.EditorApplication.isPlaying = false;
+		UnityEditor.EditorApplication.isPlaying = false;
 		Application.Quit();
 	}
 
@@ -197,6 +203,7 @@ public class MenuManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
+		isDefeated = false;
 		defeatSlider.onValueChanged.AddListener(delegate {sliderValueHandle();});
 		player.GetComponent<PlayerController>().setIsPaused (false);
 
