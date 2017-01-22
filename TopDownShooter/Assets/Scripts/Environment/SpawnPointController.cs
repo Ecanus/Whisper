@@ -78,18 +78,19 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 		if (canCreate) 
 		{
 			/* Percentage based spawn rate */
-			int spawnChance = Random.Range (0, 10);
+			int spawnChance = Random.Range (0, 11);
 
 			switch (spawnChance) {
 
-			/* 30% chance to spawn Barricade Standard */
+			/* 36% chance to spawn Barricade Standard */
 			case 0:
 			case 1:
 			case 2:
+			case 3:
 				createBarricade();
 				break;
 			
-			/* 70% chance to spawn Block */
+			/* 64% chance to spawn Block */
 			default:
 				createBlock ();
 				break;
@@ -150,7 +151,7 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 		enemyDefeatedSprite = Resources.Load<Sprite> ("Enemy_Images/Enemy_Digit_Defeated");
 
 		InvokeRepeating("spawnEnemy", 1f, 3.0f);
-		InvokeRepeating ("spawnBarricade", 1f, 2.1f);
+		InvokeRepeating ("spawnBarricade", 1f, 1.8f);
 
 	}
 

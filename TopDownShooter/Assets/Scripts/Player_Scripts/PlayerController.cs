@@ -61,7 +61,6 @@ public class PlayerController : MonoBehaviour {
 	/// the Player score
 	/// </summary>
 	private float playerNumScore;
-	private float actualScore;
 
 	/// <summary>
 	/// UI gameobject of player number score
@@ -95,10 +94,13 @@ public class PlayerController : MonoBehaviour {
 	private void handleMovement()
 	{
 		
-		float vMotion = Input.GetAxis ("Vertical") * playerSpeed;
-		float hMotion = Input.GetAxis ("Horizontal") * playerSpeed;
+		float vMotion = Input.GetAxisRaw("Vertical") * playerSpeed;
+		float hMotion = Input.GetAxisRaw("Horizontal") * playerSpeed;
+		//if(Input.GetAxis)
 		vMotion *= Time.deltaTime;
 		hMotion *= Time.deltaTime;
+
+
 
 		transform.Translate (hMotion, vMotion, 0f);
 	}
@@ -206,9 +208,8 @@ public class PlayerController : MonoBehaviour {
 	public void increaseScore (float value)
 	{
 		playerNumScore += value;
-		//actualScore += 1;
-		Barricade.fallSpeed += 0.015f;
-		playerSpeed += 0.02f;
+		Barricade.fallSpeed += 0.025f;
+		playerSpeed += 0.015f;
 
 		numScoreText = UI_NumScore.gameObject.GetComponent<Text>();
 		numScoreText.text = playerNumScore + "%";
@@ -256,9 +257,8 @@ public class PlayerController : MonoBehaviour {
 	void Start () {
 
 		/* Player values */
-		playerSpeed = 5f;
+		playerSpeed = 6f;
 		playerNumScore = 0;
-		actualScore = 0;
 		canPlaceWhisper = true;
 		isPaused = false;
 

@@ -37,6 +37,11 @@ public class TitleManager : MonoBehaviour {
 	[SerializeField]
 	private Text exitGameText;
 
+	/// <summary>
+	/// The background music
+	/// </summary>
+	[SerializeField]
+	private AudioSource BGM;
 
 	/// <summary>
 	/// Reveals slider background on mouse hover
@@ -91,12 +96,23 @@ public class TitleManager : MonoBehaviour {
 	{
 		if (Input.GetMouseButtonUp (0) && (slider.value == slider.maxValue)) 
 		{
+			StartCoroutine ("fadeMusic");
 			StartCoroutine ("LoadGame");
 		}
 
 		if (Input.GetMouseButtonUp (0) && (slider.value == slider.minValue)) 
 		{
 			StartCoroutine ("ExitGame");
+		}
+	}
+
+
+	private IEnumerator fadeMusic()
+	{
+		for (float f = 0.5f; f >= 0.05f; f -= 0.05f) {
+
+			BGM.volume = f;
+			yield return new WaitForSeconds(0.05f);
 		}
 	}
 
@@ -127,6 +143,8 @@ public class TitleManager : MonoBehaviour {
 
 		Time.timeScale = 1;
 		slider.onValueChanged.AddListener(delegate {sliderValueHandle();});
+
+		BGM = GameObject.Find ("BackgroundMusic_Audio Source").GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame

@@ -75,7 +75,6 @@ public class QuadController : MonoBehaviour {
 
 	private void OnTriggerStay(Collider other)
 	{
-
 		if (other.gameObject.CompareTag ("Player"))
 		{
 			scrollImage();

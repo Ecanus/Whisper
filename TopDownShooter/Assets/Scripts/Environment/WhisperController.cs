@@ -49,7 +49,7 @@ public class WhisperController : MonoBehaviour {
 
 			whisperColor.a = f;
 			whisperImage.color = whisperColor;
-			yield return new WaitForSeconds(0.05f);
+			yield return new WaitForSeconds(0.06f);
 		}
 
 		gameObject.GetComponent<BoxCollider> ().center = new Vector3(0f,0f,100f);

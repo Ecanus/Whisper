@@ -22,7 +22,7 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Speed at which Barricade falls towards bottom of screen
 	/// </summary>
-	public static float fallSpeed = 2f;
+	public static float fallSpeed = 3f;
 
 
 	/// <summary>

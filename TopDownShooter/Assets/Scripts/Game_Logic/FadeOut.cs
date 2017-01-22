@@ -63,7 +63,7 @@ public class FadeOut : MonoBehaviour {
 			yield return new WaitForSeconds(0.05f);
 		}
 
-		myAudio.volume = 0.1f;
+		myAudio.volume = 0.7f;
 		myAudio.Play();
 		SceneManager.LoadScene(1);
 	}

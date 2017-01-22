@@ -186,7 +186,7 @@ public class MenuManager : MonoBehaviour {
 	/// </summary>
 	private void exitGame()
 	{
-		UnityEditor.EditorApplication.isPlaying = false;
+		//UnityEditor.EditorApplication.isPlaying = false;
 		Application.Quit();
 	}
 
