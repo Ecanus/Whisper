@@ -62,10 +62,11 @@ public class BlockController : Barricade {
 	// Update is called once per frame
 	void Update () {
 
-		if (isMoving) 
-		{
-			fall();
-		} 
+		if (isLaunched) {
+			if (isMoving) {
+				fall ();
+			} 
+		}
 
 	}
 }

@@ -60,7 +60,7 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// the Player score
 	/// </summary>
-	private float playerNumScore;
+	private int playerNumScore;
 
 	/// <summary>
 	/// UI gameobject of player number score
@@ -96,10 +96,9 @@ public class PlayerController : MonoBehaviour {
 		
 		float vMotion = Input.GetAxisRaw("Vertical") * playerSpeed;
 		float hMotion = Input.GetAxisRaw("Horizontal") * playerSpeed;
-		//if(Input.GetAxis)
+
 		vMotion *= Time.deltaTime;
 		hMotion *= Time.deltaTime;
-
 
 
 		transform.Translate (hMotion, vMotion, 0f);
@@ -205,7 +204,7 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// Increases player score
 	/// </summary>
-	public void increaseScore (float value)
+	public void increaseScore (int value)
 	{
 		playerNumScore += value;
 		Barricade.fallSpeed += 0.025f;

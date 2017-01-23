@@ -23,15 +23,17 @@ public class BarricadeStandardController : Barricade {
 
 	// Use this for initialization
 	void Start () {
+		isLaunched = false;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-		if (isMoving) 
-		{
-			fall();
-		} 
+		if (isLaunched) {
+			if (isMoving) {
+				fall ();
+			} 
+		}
 
 	}
 }

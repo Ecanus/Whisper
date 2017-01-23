@@ -32,19 +32,22 @@ public class EnemyDigitController : Enemy {
 
 		fallSpeed = 1.2f;
 		healthValue = 1;
+
+		isLaunched = false;
 	}
 	
 
 	void Update () {
 	
-		if (isMoving) {
-			seekTarget ();
-		} 
+		if (isLaunched) {
+			if (canMove) {
+				seekTarget ();
+			} 
 
-		if (isKilled) 
-		{
-			gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.getDigitDefeatedSprite ();
-			fadeOut();
+			if (isKilled) {
+				gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.getDigitDefeatedSprite ();
+				fadeOut ();
+			}
 		}
 	}
 

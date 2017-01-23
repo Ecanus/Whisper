@@ -16,7 +16,7 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Points awarded to player when this enemy is defeated
 	/// </summary>
-	public static float enemyValue = 1f;
+	public static int enemyValue = 1;
 
 	/// <summary>
 	/// Player gameobject
@@ -29,6 +29,11 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// </summary>
 	[SerializeField]
 	protected GameObject target;
+
+	/// <summary>
+	/// The spawn origin.
+	/// </summary>
+	protected GameObject spawnOrigin;
 
 	/// <summary>
 	/// Health value of enemy
@@ -46,15 +51,35 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// Enemy state of being in motion
 	/// </summary>
 	[SerializeField]
-	protected bool isMoving;
+	protected bool canMove;
 
 	[SerializeField]
 	protected bool isKilled;
+
+	[SerializeField]
+	protected bool isLaunched;
 
 	/// <summary>
 	/// Moves enemy towards target destination
 	/// </summary>
 	protected abstract void seekTarget();
+
+	/// <summary>
+	/// Launch the enemy from the specified spawnPointName.
+	/// </summary>
+	public virtual void launch()
+	{
+		isLaunched = true;
+	}
+
+	/// <summary>
+	/// Sets the enemy spawnOrigin using spawnPoint parameter.
+	/// </summary>
+	/// <param name="spawnPoint">Spawn point.</param>
+	public virtual void setSpawnPoint(GameObject spawnPoint)
+	{
+		spawnOrigin = spawnPoint;
+	}
 
 	/// <summary>
 	/// Handles enemy behaviour when hit by bullet
@@ -77,19 +102,30 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// </summary>
 	protected void fadeOut()
 	{
-		//gameObject.GetComponent<SpriteRenderer> ().sprite = Resources.Load<Sprite> ("Enemy_Images/Enemy_Digit_Defated");
 		Color enemyColor = gameObject.GetComponent<SpriteRenderer> ().color;
 		enemyColor = new Color (1f, 1f, 1f, Mathf.SmoothStep (1f, 0f, 0.5f));
 		gameObject.GetComponent<SpriteRenderer> ().color = enemyColor;
-		StartCoroutine ("destroyEnemy");
+		StartCoroutine ("respawn");
 
 	}
 
-
-	private IEnumerator destroyEnemy()
+	/// <summary>
+	/// Places enemy back into SpawnPointController enemyArray attribute
+	/// </summary>
+	private IEnumerator respawn()
 	{
-		yield return new WaitForSeconds (0.060f);
-		Destroy (this.gameObject);
+		yield return new WaitForSeconds (0.075f);
+
+		transform.position = spawnOrigin.transform.position;
+
+		gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.getDigitNormalSprite();
+
+		Color enemyColor = gameObject.GetComponent<SpriteRenderer> ().color;
+		enemyColor = new Color (1f, 1f, 1f, 1f);
+		gameObject.GetComponent<SpriteRenderer> ().color = enemyColor;
+
+		isLaunched = false;
+		isKilled = false;
 	}
 		
 
@@ -98,7 +134,7 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// </summary>
 	public void halt()
 	{
-		isMoving = false;
+		canMove = false;
 	}
 
 	/// <summary>
@@ -106,6 +142,6 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// </summary>
 	public void actuate()
 	{
-		isMoving = true;
+		canMove = true;
 	}
 }

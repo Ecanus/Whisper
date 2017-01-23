@@ -18,6 +18,15 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	/// </summary>
 	protected bool isMoving;
 
+	/// <summary>
+	/// The spawn origin.
+	/// </summary>
+	protected GameObject spawnOrigin;
+
+	/// <summary>
+	/// State of being allowed to move in game
+	/// </summary>
+	protected bool isLaunched;
 
 	/// <summary>
 	/// Speed at which Barricade falls towards bottom of screen
@@ -31,6 +40,20 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	protected abstract void fall();
 
 	/// <summary>
+	/// Sets the spawn point of the Barricade
+	/// </summary>
+	/// <param name="spawnPoint">Spawn point.</param>
+	public virtual void setSpawnPoint(GameObject spawnPoint)
+	{
+		spawnOrigin = spawnPoint;
+	}
+
+	public virtual void launch()
+	{
+		isLaunched = true;
+	}
+
+	/// <summary>
 	/// Handles enemy behaviour when hit by bullet
 	/// </summary>
 	public virtual void OnTriggerStay(Collider other)
@@ -38,7 +61,8 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 
 		if (other.gameObject.CompareTag("Basin"))
 		{
-			Destroy (this.gameObject);
+			transform.position = spawnOrigin.transform.position;
+			isLaunched = false;
 		}
 	}
 

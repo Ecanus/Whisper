@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// SpawnPointController class manages enemy and barricade spawn point behaviour in-game
@@ -11,6 +12,15 @@ using System.Collections;
 /// </summary>
 /// 
 public class SpawnPointController : MonoBehaviour, IQuadChild {
+
+
+	[SerializeField]
+	private int arrayPointer;
+	[SerializeField]
+	private int blockArrayPointer;
+	[SerializeField]
+	private float spawnInvokeTimer;
+
 
 	/// <summary>
 	/// Original prefabs of assets to be instantiated.
@@ -25,9 +35,20 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// GameObjects to hold instantiated assets during runtime
 	/// </summary>
-	private GameObject enemyInstance;
 	private GameObject barricadeInstance;
 	private GameObject blockInstance;
+
+	/// <summary>
+	/// Array of enemies
+	/// </summary>
+	[SerializeField]
+	private GameObject[] enemyArray;
+
+	[SerializeField]
+	private GameObject[] barricadeArray;
+
+	[SerializeField]
+	private GameObject[] blockArray;
 
 	/// <summary>
 	/// The sprites for barricades, defeated enemies and blocks
@@ -35,6 +56,7 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	private static Sprite[] barricadeSprites;
 	private static Sprite[] blockSprites;
 	private static Sprite enemyDefeatedSprite;
+	private static Sprite enemyNormalSprite;
 
 	/// <summary>
 	/// SpawnPoint state of being able to spawn new enemies
@@ -42,16 +64,41 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	private bool canCreate;
 
 
+	/// <summary>
+	/// Populates the enemy array.
+	/// </summary>
+	private void populateArrays()
+	{
+		for (int f = 0; f <= 9; f += 1) {
+
+			enemyArray[f] = Instantiate (enemyPrefab, transform.position, transform.rotation) as GameObject;
+			enemyArray[f].transform.parent = gameObject.transform.parent;
+			enemyArray [f].GetComponent<Enemy>().setSpawnPoint(this.gameObject);
+
+			blockArray[f] = Instantiate (blockPrefab, transform.position, transform.rotation) as GameObject;
+			blockArray [f].transform.parent = gameObject.transform.parent;
+			blockArray [f].GetComponent<Barricade> ().setSpawnPoint (this.gameObject);
+		}
+
+
+		for (int f = 0; f <= 7; f += 1) {
+			barricadeArray[f] = Instantiate (barricadePrefab, transform.position, transform.rotation) as GameObject;
+			barricadeArray [f].transform.parent = gameObject.transform.parent;
+			barricadeArray [f].GetComponent<Barricade> ().setSpawnPoint (this.gameObject);
+		}
+
+	}
 
 	/// <summary>
 	/// Spawns the enemy.
 	/// </summary>
 	private void spawnEnemy()
 	{
+		
 		if (canCreate) 
 		{
 			int waveNumber = Random.Range (1, 4);
-			StartCoroutine (createEnemy(waveNumber));
+			StartCoroutine(createEnemy(waveNumber));
 		}
 	}
 
@@ -64,8 +111,7 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	{
 		for (int f = 0; f <= enemiesInWave; f += 1) {
 
-			enemyInstance = Instantiate (enemyPrefab, transform.position, transform.rotation) as GameObject;
-			enemyInstance.transform.parent = gameObject.transform.parent;
+			enemyArray[f].GetComponent<Enemy> ().launch();
 			yield return new WaitForSeconds(0.2f);
 		}
 	}
@@ -103,9 +149,11 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	/// </summary>
 	private void createBlock()
 	{
-		blockInstance = Instantiate (blockPrefab, transform.position, transform.rotation) as GameObject;
-		blockInstance.transform.parent = gameObject.transform.parent;
-		blockInstance.GetComponent<SpriteRenderer> ().sprite = blockSprites [Random.Range (0, blockSprites.Length)];
+		blockArray[blockArrayPointer].GetComponent<Barricade>().launch();
+		blockArray[blockArrayPointer].GetComponent<SpriteRenderer> ().sprite = blockSprites [Random.Range (0, blockSprites.Length)];
+
+		blockArrayPointer++;
+		blockArrayPointer = blockArrayPointer % 10;
 	}
 
 	/// <summary>
@@ -113,14 +161,33 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	/// </summary>
 	private void createBarricade()
 	{
-		barricadeInstance = Instantiate (barricadePrefab, transform.position, transform.rotation) as GameObject;
-		barricadeInstance.transform.parent = gameObject.transform.parent;
-		barricadeInstance.GetComponent<SpriteRenderer> ().sprite = barricadeSprites [Random.Range (0, barricadeSprites.Length)];
+		barricadeArray[arrayPointer].GetComponent<Barricade>().launch();
+		barricadeArray[arrayPointer].GetComponent<SpriteRenderer> ().sprite = barricadeSprites [Random.Range (0, barricadeSprites.Length)];
+
+		arrayPointer++;
+		arrayPointer = arrayPointer % 10;
 	}
 
 	public static Sprite getDigitDefeatedSprite()
 	{
 		return enemyDefeatedSprite;
+	}
+
+	public static Sprite getDigitNormalSprite()
+	{
+		return enemyNormalSprite;
+	}
+
+	public void updateEnemySpawnTimer()
+	{
+		if (spawnInvokeTimer == 1) 
+		{
+			return;
+		}
+
+		spawnInvokeTimer -= 0.1f;	
+		CancelInvoke("spawnEnemy");
+		InvokeRepeating ("spawnEnemy", 0f, spawnInvokeTimer);
 	}
 
 	/// <summary>
@@ -142,16 +209,28 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	// Use this for initialization
 	void Start () {
 
+		spawnInvokeTimer = 3.0f;
+
+		arrayPointer = 0;
+		blockArrayPointer = 0;
+
 		barricadeSprites = new Sprite[4];
 		barricadeSprites = Resources.LoadAll<Sprite> ("Enemy_Images/Barricades");
 
 		blockSprites = new Sprite[4];
 		blockSprites = Resources.LoadAll<Sprite> ("Enemy_Images/Blocks");
 
-		enemyDefeatedSprite = Resources.Load<Sprite> ("Enemy_Images/Enemy_Digit_Defeated");
+		enemyArray = new GameObject[10];
+		barricadeArray = new GameObject[8];
+		blockArray = new GameObject[10];
+		populateArrays();
 
-		InvokeRepeating("spawnEnemy", 1f, 3.0f);
-		InvokeRepeating ("spawnBarricade", 1f, 1.8f);
+		enemyDefeatedSprite = Resources.Load<Sprite> ("Enemy_Images/Enemy_Digit_Defeated");
+		enemyNormalSprite = Resources.Load<Sprite> ("Enemy_Images/Enemy_Digit");
+
+		InvokeRepeating("spawnEnemy", 1f, spawnInvokeTimer);
+		InvokeRepeating ("spawnBarricade", 1f, 1.75f);
+		InvokeRepeating ("updateEnemySpawnTimer", 30f, 10f);
 
 	}
 
