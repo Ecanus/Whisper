@@ -24,7 +24,7 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	protected GameObject spawnOrigin;
 
 	/// <summary>
-	/// State of being allowed to move in game
+	/// State of being allowed to move from spawnPoint
 	/// </summary>
 	protected bool isLaunched;
 
@@ -48,6 +48,9 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 		spawnOrigin = spawnPoint;
 	}
 
+	/// <summary>
+	/// Launch this instance of Barricade from the spawnPoint
+	/// </summary>
 	public virtual void launch()
 	{
 		isLaunched = true;

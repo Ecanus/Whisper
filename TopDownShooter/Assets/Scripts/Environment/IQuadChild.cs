@@ -11,7 +11,13 @@ using System.Collections;
 ///
 public interface IQuadChild {
 
+	/// <summary>
+	/// Halt this instance.
+	/// </summary>
 	void halt();
 
+	/// <summary>
+	/// Actuate this instance.
+	/// </summary>
 	void actuate();
 }

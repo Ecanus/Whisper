@@ -15,18 +15,9 @@ using System.Collections.Generic;
 public class PlayerController : MonoBehaviour {
 
 	/// <summary>
-	/// The relative gameobject of player being handled
-	/// </summary>
-	private GameObject player;
-
-	/// <summary>
-	/// The firing sound.
-	/// </summary>
-	//private AudioSource whisperPlacedSound;
-
-	/// <summary>
 	/// Player movement speed modifier
 	/// </summary>
+	[SerializeField]
 	private float playerSpeed;
 
 	/// <summary>
@@ -60,6 +51,7 @@ public class PlayerController : MonoBehaviour {
 	/// <summary>
 	/// the Player score
 	/// </summary>
+	[SerializeField]
 	private int playerNumScore;
 
 	/// <summary>
@@ -104,6 +96,9 @@ public class PlayerController : MonoBehaviour {
 		transform.Translate (hMotion, vMotion, 0f);
 	}
 
+	/// <summary>
+	/// Handles the player firing - both Bullets and Whispers.
+	/// </summary>
 	private void handleFiring()
 	{
 
@@ -150,7 +145,7 @@ public class PlayerController : MonoBehaviour {
 			RaycastHit rayHit;
 			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
 			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
-			bool quadTag = (rayHit.transform.tag == "Quad");
+			bool quadTag = (rayHit.transform.CompareTag("Quad"));
 
 			if (mouseRayCheck && quadTag && !isPaused) 
 			{
@@ -207,8 +202,8 @@ public class PlayerController : MonoBehaviour {
 	public void increaseScore (int value)
 	{
 		playerNumScore += value;
-		Barricade.fallSpeed += 0.025f;
-		playerSpeed += 0.015f;
+		Barricade.fallSpeed += 0.010f;
+		playerSpeed += 0.005f;
 
 		numScoreText = UI_NumScore.gameObject.GetComponent<Text>();
 		numScoreText.text = playerNumScore + "%";
@@ -224,12 +219,10 @@ public class PlayerController : MonoBehaviour {
 	private void cameraConstrain()
 	{
 
-
 		Vector3 pos = Camera.main.WorldToViewportPoint(transform.position);
 		pos.x = Mathf.Clamp(pos.x, 0.05f, 0.95f);
 		pos.y = Mathf.Clamp(pos.y, 0.05f, 0.95f);
 		transform.position = Camera.main.ViewportToWorldPoint(pos);
-
 
 	}
 
@@ -260,6 +253,9 @@ public class PlayerController : MonoBehaviour {
 		playerNumScore = 0;
 		canPlaceWhisper = true;
 		isPaused = false;
+
+		/* Barricade Fall Speed Reset */
+		Barricade.fallSpeed = 3f;
 
 	}
 	

@@ -33,12 +33,6 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	private GameObject blockPrefab;
 
 	/// <summary>
-	/// GameObjects to hold instantiated assets during runtime
-	/// </summary>
-	private GameObject barricadeInstance;
-	private GameObject blockInstance;
-
-	/// <summary>
 	/// Array of enemies
 	/// </summary>
 	[SerializeField]
@@ -53,10 +47,10 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// The sprites for barricades, defeated enemies and blocks
 	/// </summary>
-	private static Sprite[] barricadeSprites;
-	private static Sprite[] blockSprites;
-	private static Sprite enemyDefeatedSprite;
-	private static Sprite enemyNormalSprite;
+	private Sprite[] barricadeSprites;
+	private Sprite[] blockSprites;
+	public static Sprite enemyDefeatedSprite;
+	public static Sprite enemyNormalSprite;
 
 	/// <summary>
 	/// SpawnPoint state of being able to spawn new enemies
@@ -76,21 +70,21 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 			enemyArray [f].GetComponent<Enemy>().setSpawnPoint(this.gameObject);
 
 			blockArray[f] = Instantiate (blockPrefab, transform.position, transform.rotation) as GameObject;
-			blockArray [f].transform.parent = gameObject.transform.parent;
-			blockArray [f].GetComponent<Barricade> ().setSpawnPoint (this.gameObject);
+			blockArray[f].transform.parent = gameObject.transform.parent;
+			blockArray[f].GetComponent<Barricade>().setSpawnPoint(this.gameObject);
 		}
 
 
 		for (int f = 0; f <= 7; f += 1) {
 			barricadeArray[f] = Instantiate (barricadePrefab, transform.position, transform.rotation) as GameObject;
-			barricadeArray [f].transform.parent = gameObject.transform.parent;
-			barricadeArray [f].GetComponent<Barricade> ().setSpawnPoint (this.gameObject);
+			barricadeArray[f].transform.parent = gameObject.transform.parent;
+			barricadeArray[f].GetComponent<Barricade>().setSpawnPoint(this.gameObject);
 		}
 
 	}
 
 	/// <summary>
-	/// Spawns the enemy.
+	/// Spawns the Enemy.
 	/// </summary>
 	private void spawnEnemy()
 	{
@@ -133,12 +127,12 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 			case 1:
 			case 2:
 			case 3:
-				createBarricade();
+				launchBarricade();
 				break;
 			
 			/* 64% chance to spawn Block */
 			default:
-				createBlock ();
+				launchBlock ();
 				break;
 			}
 		}
@@ -147,8 +141,9 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Creates the block.
 	/// </summary>
-	private void createBlock()
+	private void launchBlock()
 	{
+		blockArray[blockArrayPointer].GetComponent<BlockController> ().setOffset ();
 		blockArray[blockArrayPointer].GetComponent<Barricade>().launch();
 		blockArray[blockArrayPointer].GetComponent<SpriteRenderer> ().sprite = blockSprites [Random.Range (0, blockSprites.Length)];
 
@@ -159,33 +154,27 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Creates the barricade.
 	/// </summary>
-	private void createBarricade()
+	private void launchBarricade()
 	{
 		barricadeArray[arrayPointer].GetComponent<Barricade>().launch();
 		barricadeArray[arrayPointer].GetComponent<SpriteRenderer> ().sprite = barricadeSprites [Random.Range (0, barricadeSprites.Length)];
 
 		arrayPointer++;
-		arrayPointer = arrayPointer % 10;
+		arrayPointer = arrayPointer % 8;
 	}
 
-	public static Sprite getDigitDefeatedSprite()
-	{
-		return enemyDefeatedSprite;
-	}
-
-	public static Sprite getDigitNormalSprite()
-	{
-		return enemyNormalSprite;
-	}
-
+	/// <summary>
+	/// Updates the time between enemy spawns
+	/// </summary>
 	public void updateEnemySpawnTimer()
 	{
-		if (spawnInvokeTimer == 1) 
+		if (spawnInvokeTimer <= 1f) 
 		{
+			spawnInvokeTimer = 1f;
 			return;
 		}
 
-		spawnInvokeTimer -= 0.1f;	
+		spawnInvokeTimer -= 0.45f;	
 		CancelInvoke("spawnEnemy");
 		InvokeRepeating ("spawnEnemy", 0f, spawnInvokeTimer);
 	}
@@ -230,7 +219,7 @@ public class SpawnPointController : MonoBehaviour, IQuadChild {
 
 		InvokeRepeating("spawnEnemy", 1f, spawnInvokeTimer);
 		InvokeRepeating ("spawnBarricade", 1f, 1.75f);
-		InvokeRepeating ("updateEnemySpawnTimer", 30f, 10f);
+		InvokeRepeating ("updateEnemySpawnTimer", 60f, 60f);
 
 	}
 

@@ -45,7 +45,7 @@ public class EnemyDigitController : Enemy {
 			} 
 
 			if (isKilled) {
-				gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.getDigitDefeatedSprite ();
+				gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.enemyDefeatedSprite;
 				fadeOut ();
 			}
 		}

@@ -34,7 +34,7 @@ public class WhisperController : MonoBehaviour {
 	/// <summary>
 	/// Whisper becomes functioning for a period of time
 	/// </summary>
-	/// <returns>The start.</returns>
+	/// <returns>Time between fade increments.</returns>
 	private IEnumerator whisperStart()
 	{
 
@@ -55,17 +55,5 @@ public class WhisperController : MonoBehaviour {
 		gameObject.GetComponent<BoxCollider> ().center = new Vector3(0f,0f,100f);
 		player.setWhisperPlaceable (true);
 
-	}
-		
-
-
-	// Use this for initialization
-	void Start () {
-
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
 	}
 }

@@ -24,7 +24,7 @@ public class BlockController : Barricade {
 	/// <summary>
 	/// Randomly selects block x axis offset from range of values
 	/// </summary>
-	private void setOffset()
+	public void setOffset()
 	{
 		int offset = Random.Range (0, 6);
 
@@ -55,7 +55,7 @@ public class BlockController : Barricade {
 	// Use this for initialization
 	void Start () {
 
-		setOffset();
+		//setOffset();
 
 	}
 

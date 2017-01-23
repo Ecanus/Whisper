@@ -3,7 +3,7 @@ using System.Collections;
 
 /// <summary>
 /// EnemyDigitController class manages Canister enemy types in-game.
-/// Not implemented in Beta
+/// NOT IMPLEMENTED
 /// 
 /// @author - Dedie K.
 /// @version - 0.0.1

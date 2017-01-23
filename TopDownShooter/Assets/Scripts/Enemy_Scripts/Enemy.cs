@@ -16,7 +16,7 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	/// <summary>
 	/// Points awarded to player when this enemy is defeated
 	/// </summary>
-	public static int enemyValue = 1;
+	public static int scoreValue = 1;
 
 	/// <summary>
 	/// Player gameobject
@@ -53,9 +53,15 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 	[SerializeField]
 	protected bool canMove;
 
+	/// <summary>
+	/// State of having lost all healthValue
+	/// </summary>
 	[SerializeField]
 	protected bool isKilled;
 
+	/// <summary>
+	/// State of being allowed to leave spawnPoint
+	/// </summary>
 	[SerializeField]
 	protected bool isLaunched;
 
@@ -91,20 +97,21 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 
 		if ((healthValue <= 0))
 		{
-			player.gameObject.GetComponent<PlayerController>().increaseScore(enemyValue);
+			player.gameObject.GetComponent<PlayerController>().increaseScore(scoreValue);
 			isKilled = true;
 		}
 	}
 		
 
 	/// <summary>
-	/// Fades the out enemy upon defeat. Destroys object once fade is complete
+	/// Fades the out enemy upon defeat. Relocates Enemy once fade is complete
 	/// </summary>
 	protected void fadeOut()
 	{
 		Color enemyColor = gameObject.GetComponent<SpriteRenderer> ().color;
 		enemyColor = new Color (1f, 1f, 1f, Mathf.SmoothStep (1f, 0f, 0.5f));
 		gameObject.GetComponent<SpriteRenderer> ().color = enemyColor;
+
 		StartCoroutine ("respawn");
 
 	}
@@ -118,7 +125,7 @@ abstract public class Enemy : MonoBehaviour, IQuadChild {
 
 		transform.position = spawnOrigin.transform.position;
 
-		gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.getDigitNormalSprite();
+		gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.enemyNormalSprite;
 
 		Color enemyColor = gameObject.GetComponent<SpriteRenderer> ().color;
 		enemyColor = new Color (1f, 1f, 1f, 1f);
