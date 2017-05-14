@@ -38,7 +38,7 @@ public class WhisperController : MonoBehaviour {
 	private IEnumerator whisperStart()
 	{
 
-		Image whisperImage = gameObject.GetComponent<Image>();
+		SpriteRenderer whisperImage = gameObject.GetComponent<SpriteRenderer>();
 		Color whisperColor = whisperImage.color;
 		whisperColor.a = 1f;
 		whisperImage.color = whisperColor;

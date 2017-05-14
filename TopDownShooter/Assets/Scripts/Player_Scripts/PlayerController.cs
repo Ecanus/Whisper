@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using CnControls;
+using UnityEngine.EventSystems;
 using System.Collections.Generic;
 
 
@@ -78,87 +80,87 @@ public class PlayerController : MonoBehaviour {
 	/// </summary>
 	private bool isPaused;
 
-	/// <summary>
-	/// Handles the input of player character.
-	/// Maintains character momentum, as values are constantly updated, rather than
-	/// only on press or release.
-	/// </summary>
-	private void handleMovement()
-	{
-		
-		float vMotion = Input.GetAxisRaw("Vertical") * playerSpeed;
-		float hMotion = Input.GetAxisRaw("Horizontal") * playerSpeed;
-
-		vMotion *= Time.deltaTime;
-		hMotion *= Time.deltaTime;
-
-
-		transform.Translate (hMotion, vMotion, 0f);
-	}
-
-	/// <summary>
-	/// Handles the player firing - both Bullets and Whispers.
-	/// </summary>
-	private void handleFiring()
+    /// <summary>
+    /// Handles the input of player character.
+    /// Maintains character momentum, as values are constantly updated, rather than
+    /// only on press or release.
+    /// </summary>
+    private void handleMovement()
 	{
 
-		/* 
+        //Check if we are running either in the Unity editor or in a standalone build.
+
+        float vMotion = CnInputManager.GetAxisRaw("Vertical") * playerSpeed;
+		float hMotion = CnInputManager.GetAxisRaw("Horizontal") * playerSpeed;
+        
+        vMotion *= Time.deltaTime;
+        hMotion *= Time.deltaTime;
+
+        transform.Translate(hMotion, vMotion, 0f);
+
+    }
+
+    /// <summary>
+    /// Handles the player firing - both Bullets and Whispers.
+    /// </summary>
+    private void handleFiring()
+	{
+
+        /* 
 		 * Left Click handler, for bullet firing 
 		*/
-		if (Input.GetMouseButtonDown(0)) 
-		{	
-			
-			/* Initialise values to store raycast */
-			RaycastHit rayHit;
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
+       
+        if (CnInputManager.GetButtonDown("Jump"))
+        {
 
-			/* If ray makes contact with world, determine vector between mouseposition and player */
-			if (mouseRayCheck && !isPaused)
-			{
-				/* Determine x, y coordinates using ray from mousePosition to player position */
-				float xValue = rayHit.point.x - transform.position.x;
-				float yValue = rayHit.point.y - transform.position.y;
+            /* Initialise values to store raycast */
+            RaycastHit rayHit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool mouseRayCheck = Physics.Raycast(ray, out rayHit, 1000);
 
-				/* Assign values to shootVector variable */
-				shootVector.x = xValue;
-				shootVector.y = yValue;;
+            /* If ray makes contact with world, determine vector between mouseposition and player */
+            if (mouseRayCheck && !isPaused)
+            {
 
-				/* Normalize to bound vector values and make scaling uniform */
-				shootVector.Normalize();
+                /* Assign values to shootVector variable */
+                shootVector.x = 0;
+                shootVector.y = 1; ;
 
-				/* Instantiate bullet using existing prefab, at current player location */
-				bulletInstance = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
-				bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadName);
+                /* Normalize to bound vector values and make scaling uniform */
+                shootVector.Normalize();
 
-				/* Destroy the particular instance after 1.5 seconds */
-				Destroy (bulletInstance, 0.25f);
-			}
-		}
+                /* Instantiate bullet using existing prefab, at current player location */
+                bulletInstance = Instantiate(bulletPrefab, transform.position, transform.rotation) as GameObject;
+                bulletInstance.GetComponent<Bullet>().fireBullet(shootVector, quadName);
+
+                /* Destroy the particular instance after 1.5 seconds */
+                Destroy(bulletInstance, 0.25f);
+            }
+        }
 
 
-		/* 
+        /* 
 		 * Right Click handler, for placing Whisper
 		 */
-		if (Input.GetMouseButtonDown (1)) 
-		{
-			RaycastHit rayHit;
-			Ray ray = Camera.main.ScreenPointToRay (Input.mousePosition);
-			bool mouseRayCheck = Physics.Raycast (ray, out rayHit, 1000);
-			bool quadTag = (rayHit.transform.CompareTag("Quad"));
+        else if (Input.GetMouseButtonDown(0) && CnInputManager.GetAxisRaw("Horizontal") == 0f && CnInputManager.GetAxisRaw("Vertical") == 0f)
+        {
+            RaycastHit rayHit;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            bool mouseRayCheck = Physics.Raycast(ray, out rayHit, 1000);
+            bool quadTag = rayHit.transform.CompareTag("Quad");
 
-			if (mouseRayCheck && quadTag && !isPaused) 
-			{
-				string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
-				GameObject whisperObject = GameObject.Find (whisperQuadName);
+            if (mouseRayCheck && quadTag && !isPaused)
+            {
+                string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
+                GameObject whisperObject = GameObject.Find(whisperQuadName);
 
-				whisperObject.gameObject.GetComponent<WhisperController>().activateWhisper();
-				canPlaceWhisper = false;
-			}
+                whisperObject.gameObject.GetComponent<WhisperController>().activateWhisper();
+                canPlaceWhisper = false;
+            }
 
 
-		}
-	}
+        }
+    }
 
 	/// <summary>
 	/// Gets the state of the whisper.
@@ -257,10 +259,10 @@ public class PlayerController : MonoBehaviour {
 		/* Barricade Fall Speed Reset */
 		Barricade.fallSpeed = 3f;
 
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update () {
 
 		handleMovement();
 		handleFiring();

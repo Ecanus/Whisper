@@ -133,7 +133,7 @@ public class MenuManager : MonoBehaviour {
 
 		if (Input.GetMouseButtonUp (0) && (defeatSlider.value == defeatSlider.maxValue)) 
 		{
-			loadScene(2);
+			loadScene(0);
 		}
 
 		if (Input.GetMouseButtonUp (0) && (defeatSlider.value == defeatSlider.minValue)) 
