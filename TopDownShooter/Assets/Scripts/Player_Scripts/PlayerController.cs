@@ -257,11 +257,15 @@ public class PlayerController : MonoBehaviour {
 
 	private void OnTriggerEnter(Collider other)
 	{
-
 		if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Barricade")
 		{
 			handleDamage();
 		}
+
+        if (other.gameObject.tag == "Quad")
+        {
+            Debug.Log(other.gameObject.name);
+        }
 	}
 
 	private void OnTriggerStay(Collider other)

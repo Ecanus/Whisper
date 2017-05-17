@@ -10,7 +10,7 @@ using System.Collections;
 /// 
 /// </summary>
 ///
-abstract public class Barricade : MonoBehaviour, IQuadChild {
+public abstract class Barricade : MonoBehaviour, IQuadChild {
 
 
 	/// <summary>
@@ -34,10 +34,10 @@ abstract public class Barricade : MonoBehaviour, IQuadChild {
 	public static float fallSpeed = 3f;
 
 
-	/// <summary>
-	/// Tells barricade to move in a downwards direction
-	/// </summary>
-	protected abstract void fall();
+    /// <summary>
+    /// Tells barricade to move in a downwards direction
+    /// </summary>
+    protected abstract void fall();
 
 	/// <summary>
 	/// Sets the spawn point of the Barricade

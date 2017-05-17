@@ -26,6 +26,10 @@ public class QuadController : MonoBehaviour {
 	[SerializeField]
 	private float currentOffsetTime;
 
+    /// <summary>
+    /// The amount of time the player is in the quad. This determines speed
+    /// </summary>
+    private float currentElapsedTimeInQuad;
 
 	/// <summary>
 	/// Scrolls the quad texture verticallly by scrollSpeed.
@@ -73,12 +77,32 @@ public class QuadController : MonoBehaviour {
 		}
 	}
 
-	private void OnTriggerStay(Collider other)
+    /// <summary>
+    /// Speeds up the lane every X seconds
+    /// </summary>
+    private void speedUpLane()
+    {
+        currentElapsedTimeInQuad += Time.deltaTime;
+        if (currentElapsedTimeInQuad > scrollSpeed*50)
+        {
+            Debug.Log("SPEED UP LANE");
+            scrollSpeed += (scrollSpeed/2);
+            Barricade.fallSpeed += (Barricade.fallSpeed / 2);
+        }
+        else
+        {
+            Debug.Log(currentElapsedTimeInQuad);
+        }
+    }
+
+
+    private void OnTriggerStay(Collider other)
 	{
 		if (other.gameObject.CompareTag ("Player"))
 		{
 			scrollImage();
 			actuateAllChildren();
+            speedUpLane();
 		}
 
 		if (other.gameObject.CompareTag("Whisper"))
@@ -102,7 +126,7 @@ public class QuadController : MonoBehaviour {
 
 		scrollSpeed = 0.2f;
 		currentOffsetTime = Time.deltaTime;
-	
+        currentElapsedTimeInQuad = 0f;
 	}
 	
 	// Update is called once per frame
