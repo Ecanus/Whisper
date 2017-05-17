@@ -109,7 +109,6 @@ public class PlayerController : MonoBehaviour {
         /* 
 		 * Left Click handler, for bullet firing 
 		*/
-       
         if (CnInputManager.GetButtonDown("Jump"))
         {
 
@@ -124,7 +123,7 @@ public class PlayerController : MonoBehaviour {
 
                 /* Assign values to shootVector variable */
                 shootVector.x = 0;
-                shootVector.y = 1; ;
+                shootVector.y = 1;
 
                 /* Normalize to bound vector values and make scaling uniform */
                 shootVector.Normalize();
@@ -140,33 +139,60 @@ public class PlayerController : MonoBehaviour {
 
 
         /* 
-		 * Right Click handler, for placing Whisper
+		 * For placing Whisper
 		 */
-        else if (Input.GetMouseButtonDown(0) && CnInputManager.GetAxisRaw("Horizontal") == 0f && CnInputManager.GetAxisRaw("Vertical") == 0f)
+        else if (Input.touchCount > 0)
         {
-            RaycastHit rayHit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool mouseRayCheck = Physics.Raycast(ray, out rayHit, 1000);
-            bool quadTag = rayHit.transform.CompareTag("Quad");
-
-            if (mouseRayCheck && quadTag && !isPaused)
+            //check every touch happening on the screen
+            foreach (Touch currentTouch in Input.touches)
             {
-                string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
-                GameObject whisperObject = GameObject.Find(whisperQuadName);
+                //check if touches in the begin phase are touching anything apart of the UI
+                if (currentTouch.phase == TouchPhase.Began)
+                {
+                    PointerEventData pointer = new PointerEventData(EventSystem.current);
+                    pointer.position = currentTouch.position;
 
-                whisperObject.gameObject.GetComponent<WhisperController>().activateWhisper();
-                canPlaceWhisper = false;
+                    List<RaycastResult> raycastResults = new List<RaycastResult>();
+                    EventSystem.current.RaycastAll(pointer, raycastResults);
+
+                    if (raycastResults.Count > 0)
+                    {
+                        continue;
+                    }
+                }
+
+                //if we have drags or other phases, ignore them
+                else
+                {
+                    continue;
+                }
+
+
+                //if we have not touched a UI element and it's a touch in began phase, place the whisper
+                RaycastHit rayHit;
+                Ray ray = Camera.main.ScreenPointToRay(currentTouch.position);
+                bool mouseRayCheck = Physics.Raycast(ray, out rayHit, 1000);
+                bool quadTag = rayHit.transform.CompareTag("Quad");
+
+                if (mouseRayCheck && quadTag && !isPaused)
+                {
+                    string whisperQuadName = rayHit.collider.gameObject.name + "_Whisper";
+                    GameObject whisperObject = GameObject.Find(whisperQuadName);
+
+                    whisperObject.gameObject.GetComponent<WhisperController>().activateWhisper();
+                    canPlaceWhisper = false;
+                }
+
             }
-
 
         }
     }
 
-	/// <summary>
-	/// Gets the state of the whisper.
-	/// </summary>
-	/// <returns><c>true</c>, if whisper state was gotten, <c>false</c> otherwise.</returns>
-	public bool getWhisperPlaceable()
+    /// <summary>
+    /// Gets the state of the whisper.
+    /// </summary>
+    /// <returns><c>true</c>, if whisper state was gotten, <c>false</c> otherwise.</returns>
+    public bool getWhisperPlaceable()
 	{
 		return canPlaceWhisper;
 	}
