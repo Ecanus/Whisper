@@ -10,45 +10,56 @@ using System.Collections;
 /// 
 /// </summary>
 /// 
-public class EnemyDigitController : Enemy {
 
-	/// <summary>
-	/// Moves enemy towards target destination
-	/// </summary>
-	protected override void seekTarget()
-	{
-		Vector2 from = transform.position;
-		Vector2 to = target.transform.position;
+namespace Whisper
+{
+    /*
+    public class EnemyDigitController : Enemy
+    {
 
-		transform.position = Vector2.Lerp (from, to, (Time.deltaTime * fallSpeed));
+        /// <summary>
+        /// Moves enemy towards target destination
+        /// </summary>
+        protected void seekTarget()
+        {
+            Vector2 from = transform.position;
+            Vector2 to = player.transform.position;
 
-	}
-		
+            transform.position = Vector2.Lerp(from, to, (Time.deltaTime * fallSpeed));
 
-	void Start () {
+        }
 
-		player = GameObject.Find("Sprite_Player");
-		target = player;
 
-		fallSpeed = 1.2f;
-		healthValue = 1;
+        void Start()
+        {
 
-		isLaunched = false;
-	}
-	
+            player = GameObject.Find("Sprite_Player");
 
-	void Update () {
-	
-		if (isLaunched) {
-			if (canMove) {
-				seekTarget ();
-			} 
+            fallSpeed = 1.2f;
+            healthValue = 1;
 
-			if (isKilled) {
-				gameObject.GetComponent<SpriteRenderer> ().sprite = SpawnPointController.enemyDefeatedSprite;
-				fadeOut ();
-			}
-		}
-	}
+            isLaunched = false;
+        }
 
+
+        void Update()
+        {
+
+            if (isLaunched)
+            {
+                if (canMove)
+                {
+                    seekTarget();
+                }
+
+                if (isKilled)
+                {
+                    gameObject.GetComponent<SpriteRenderer>().sprite = SpawnPointController.enemyDefeatedSprite;
+                    fadeOut();
+                }
+            }
+        }
+
+    }
+    */
 }

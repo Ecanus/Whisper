@@ -9,64 +9,74 @@ using System.Collections;
 /// 
 /// </summary>
 ///
-public class BlockController : Barricade {
+
+namespace Whisper
+{
+    public class BlockController : Barricade
+    {
 
 
-	/// <summary>
-	/// Moves barricade in downwards direction
-	/// </summary>
-	protected override void fall()
-	{
-		transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
-	}
-		
+        private float fallSpeed;
 
-	/// <summary>
-	/// Randomly selects block x axis offset from range of values
-	/// </summary>
-	public void setOffset()
-	{
-		int offset = Random.Range (0, 6);
-
-		switch (offset) 
-		{
-		case 0:
-			transform.Translate (Vector2.left * 1.5f);
-			break;
-		case 1:
-			break;
-		case 2:
-			transform.Translate (Vector2.right * 1.0f);
-			break;
-		case 3:
-			transform.Translate (Vector2.left * 1.0f);
-			break;
-		case 4:
-			transform.Translate (Vector2.right * 0.5f);
-			break;
-		case 5:
-			transform.Translate (Vector2.left * 0.5f);
-			break;
-		}
-
-	}
+        /// <summary>
+        /// Moves barricade in downwards direction
+        /// </summary>
+       
+        protected override void fall()
+        {
+            transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
+        }
 
 
-	// Use this for initialization
-	void Start () {
+        /// <summary>
+        /// Randomly selects block x axis offset from range of values
+        /// </summary>
+        public void setOffset()
+        {
+            int offset = Random.Range(0, 6);
 
-		//setOffset();
+            switch (offset)
+            {
+                case 0:
+                    transform.Translate(Vector2.left * 1.5f);
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    transform.Translate(Vector2.right * 1.0f);
+                    break;
+                case 3:
+                    transform.Translate(Vector2.left * 1.0f);
+                    break;
+                case 4:
+                    transform.Translate(Vector2.right * 0.5f);
+                    break;
+                case 5:
+                    transform.Translate(Vector2.left * 0.5f);
+                    break;
+            }
 
-	}
+        }
 
-	// Update is called once per frame
-	void Update () {
 
-		if (isLaunched) {
-			if (isMoving) {
-				fall ();
-			} 
-		}
+        // Use this for initialization
+        void Start()
+        {
+            Debug.Log("Block starting");
+            setOffset();
+            fallSpeed = GetComponentInParent<QuadController>().getCurrentBarricadeSpeed();
+        }
 
-	}
+        // Update is called once per frame
+        void Update()
+        {
+
+            if (!isMoving)
+            {
+                return;
+            }
+            fall();
+        }
+    }
+
 }

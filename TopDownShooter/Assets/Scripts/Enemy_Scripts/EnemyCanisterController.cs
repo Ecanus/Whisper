@@ -11,38 +11,46 @@ using System.Collections;
 /// 
 /// </summary>
 /// 
-public class EnemyCanisterController : Enemy {
 
-	/// <summary>
-	/// Uses a sine wave pattern to approach player
-	/// </summary>
-	protected override void seekTarget()
-	{
-		float frequency = 5f;
-		float magnitude = 0.1f;
+namespace Whisper
+{
+    public class EnemyCanisterController : Enemy
+    {
 
-		Vector3 pos = transform.position;
-		Vector3 axis = Vector3.down;
+        /// <summary>
+        /// Uses a sine wave pattern to approach player
+        /// </summary>
+        protected void seekTarget()
+        {
+            float frequency = 5f;
+            float magnitude = 0.1f;
 
-		pos += (Vector3.down * Time.deltaTime * fallSpeed);
-		transform.position = pos + axis * Mathf.Sin (Time.time * frequency) * magnitude;
-	}
+            Vector3 pos = transform.position;
+            Vector3 axis = Vector3.down;
+
+            pos += (Vector3.down * Time.deltaTime * fallSpeed);
+            transform.position = pos + axis * Mathf.Sin(Time.time * frequency) * magnitude;
+        }
 
 
-	// Use this for initialization
-	void Start () {
-		fallSpeed = 1f;
-		healthValue = 3;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        // Use this for initialization
+        void Start()
+        {
+            fallSpeed = 1f;
+            healthValue = 3;
+        }
 
-		seekTarget();
+        // Update is called once per frame
+        void Update()
+        {
 
-		if (isKilled) 
-		{
-			fadeOut();
-		}
-	}
+            seekTarget();
+
+            if (isKilled)
+            {
+                fadeOut();
+            }
+        }
+    }
+
 }

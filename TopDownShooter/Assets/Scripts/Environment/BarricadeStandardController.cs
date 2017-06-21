@@ -9,31 +9,41 @@ using System.Collections;
 /// 
 /// </summary>
 ///
-public class BarricadeStandardController : Barricade {
+
+namespace Whisper
+{
+    public class BarricadeStandardController : Barricade
+    {
+
+        private float fallSpeed;
+
+        /// <summary>
+        /// Moves Barricade in downwoards direction
+        /// </summary>
+        protected override void fall()
+        {
+            transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
+        }
 
 
-	/// <summary>
-	/// Moves Barricade in downwoards direction
-	/// </summary>
-	protected override void fall()
-	{
-		transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
-	}
-		
+        // Use this for initialization
+        void Start()
+        {
+            //isLaunched = false;
+            fallSpeed = GetComponentInChildren<QuadController>().getCurrentBarricadeSpeed();
+        }
 
-	// Use this for initialization
-	void Start () {
-		isLaunched = false;
-	}
-	
-	// Update is called once per frame
-	void Update () {
+        // Update is called once per frame
+        void Update()
+        {
+            if (!isMoving)
+            {
+                return;
+            }
 
-		if (isLaunched) {
-			if (isMoving) {
-				fall ();
-			} 
-		}
+            fall();
+        }
+    }
 
-	}
 }
+
