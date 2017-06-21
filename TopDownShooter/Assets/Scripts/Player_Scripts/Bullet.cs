@@ -59,11 +59,6 @@ namespace Whisper
         private void OnTriggerEnter(Collider other)
         {
 
-            if (other.gameObject.CompareTag("Enemy"))
-            {
-                other.gameObject.GetComponent<Enemy>().isShot();
-            }
-
         }
 
         private void OnTriggerExit(Collider other)

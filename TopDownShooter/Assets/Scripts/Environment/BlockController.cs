@@ -14,17 +14,30 @@ namespace Whisper
 {
     public class BlockController : Barricade
     {
-
-
+        [SerializeField]
         private float fallSpeed;
 
+        private QuadController quadController;
+
         /// <summary>
-        /// Moves barricade in downwards direction
+        /// Moves Barricade in downwoards direction
         /// </summary>
-       
         protected override void fall()
         {
+            if (!quadController.canMoveEntitiesInQuad())
+            {
+                return;
+            }
             transform.Translate(Vector3.down * Time.deltaTime * fallSpeed);
+        }
+
+
+        // Use this for initialization
+        void Start()
+        {
+            //isLaunched = false;
+            quadController = GetComponentInParent<QuadController>();
+            fallSpeed = quadController.getCurrentBarricadeSpeed();
         }
 
 
@@ -58,23 +71,9 @@ namespace Whisper
 
         }
 
-
-        // Use this for initialization
-        void Start()
-        {
-            Debug.Log("Block starting");
-            setOffset();
-            fallSpeed = GetComponentInParent<QuadController>().getCurrentBarricadeSpeed();
-        }
-
         // Update is called once per frame
         void Update()
         {
-
-            if (!isMoving)
-            {
-                return;
-            }
             fall();
         }
     }

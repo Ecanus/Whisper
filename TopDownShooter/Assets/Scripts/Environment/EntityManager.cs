@@ -65,28 +65,28 @@ namespace Whisper
             spawnedObjects.Add(objectToSpawn);
         }
 
-        public void moveAllObstacles()
-        {
-            foreach (GameObject go in spawnedObjects)
-            {
-                go.transform.Translate(Vector3.down * Time.deltaTime * speed);
-            }
-        }
+        //public void moveAllObstacles()
+        //{
+        //    foreach (GameObject go in spawnedObjects)
+        //    {
+        //        go.transform.Translate(Vector3.down * Time.deltaTime * speed);
+        //    }
+        //}
 
-        public void moveNonEnemies()
-        {
-            foreach (GameObject go in spawnedObjects)
-            {
-                if (go.name.ToLower().Contains("enemy"))
-                {
-                    continue;
-                }
+        //public void moveNonEnemies()
+        //{
+        //    foreach (GameObject go in spawnedObjects)
+        //    {
+        //        if (go.name.ToLower().Contains("enemy"))
+        //        {
+        //            continue;
+        //        }
 
-                go.transform.Translate(Vector3.down * Time.deltaTime * speed);
+        //        go.transform.Translate(Vector3.down * Time.deltaTime * speed);
 
 
-            }
-        }
+        //    }
+        //}
 
 
     }

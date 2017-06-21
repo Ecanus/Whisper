@@ -85,7 +85,7 @@ namespace Whisper
         private bool isPaused;
 
         public static string currentQuad;
-
+        public static float totalTimeInQuads;
 
         /// <summary>
         /// Handles the input of player character.
@@ -264,7 +264,16 @@ namespace Whisper
 
         private void OnTriggerEnter(Collider other)
         {
-            if (other.gameObject.tag == "Enemy" || other.gameObject.tag == "Barricade")
+            if (other.gameObject.tag == "Enemy")
+            {
+                if (!other.GetComponent<Enemy>().shouldGiveDamage())
+                {
+                    return;
+                }
+                handleDamage();
+            }
+
+            if (other.gameObject.tag == "Barricade")
             {
                 handleDamage();
             }
@@ -289,24 +298,21 @@ namespace Whisper
         // Use this for initialization
         void Start()
         {
-
             /* Player values */
             playerSpeed = 6f;
             playerNumScore = 0;
             canPlaceWhisper = true;
             isPaused = false;
-
-
+            totalTimeInQuads = 0f;
         }
 
         // Update is called once per frame
         void Update()
         {
-
+            totalTimeInQuads += Time.deltaTime;
             handleMovement();
             handleFiring();
             cameraConstrain();
-
         }
     }
 

@@ -66,7 +66,7 @@ namespace Whisper
 
         public void Start()
         {
-            Debug.Log("enemy call start");
+            //Debug.Log("enemy call start");
             player = GameObject.Find("Sprite_Player");
             fallSpeed = GetComponentInParent<QuadController>().getCurrentEnemySpeed();
         }
@@ -82,12 +82,17 @@ namespace Whisper
 
         }
 
+        public bool shouldGiveDamage()
+        {
+            return isKilled == false;
+        }
+
         /// <summary>
         /// Moves enemy towards target destination
         /// </summary>
         private void seekTarget()
         {
-
+            if (isKilled) return;
             Vector2 from = transform.position;
             Vector2 to = player.transform.position;
 
@@ -114,15 +119,14 @@ namespace Whisper
         /// <summary>
         /// Handles enemy behaviour when hit by bullet
         /// </summary>
-        public virtual void isShot()
+        private void isShot()
         {
             /* If hit, decrease health */
             healthValue--;
-
+            
             if ((healthValue <= 0))
             {
                 player.gameObject.GetComponent<PlayerController>().increaseScore(scoreValue);
-                isKilled = true;
             }
         }
 
@@ -132,42 +136,42 @@ namespace Whisper
         /// </summary>
         protected void fadeOut()
         {
-            Color enemyColor = gameObject.GetComponent<SpriteRenderer>().color;
-            enemyColor = new Color(1f, 1f, 1f, Mathf.SmoothStep(1f, 0f, 0.5f));
-            gameObject.GetComponent<SpriteRenderer>().color = enemyColor;
-
-            StartCoroutine("respawn");
+            if (isKilled) return;
+            isKilled = true;
+            gameObject.GetComponent<SpriteRenderer>().sprite = ResourceManager.enemyDefeatedSprite;
+            StartCoroutine(RemoveEnemyWithDelay());
 
         }
 
-        /*
-        /// <summary>
-        /// Places enemy back into SpawnPointController enemyArray attribute
-        /// </summary>
-        private IEnumerator respawn()
+        private IEnumerator RemoveEnemyWithDelay()
         {
-            yield return new WaitForSeconds(0.075f);
-
-            transform.position = spawnOrigin.transform.position;
-
-            gameObject.GetComponent<SpriteRenderer>().sprite = SpawnPointController.enemyNormalSprite;
-
-            Color enemyColor = gameObject.GetComponent<SpriteRenderer>().color;
-            enemyColor = new Color(1f, 1f, 1f, 1f);
-            gameObject.GetComponent<SpriteRenderer>().color = enemyColor;
-
-            isLaunched = false;
-            isKilled = false;
+            float fadeOutAlpha = 0.5f;
+            while (fadeOutAlpha > 0f)
+            {
+                Debug.Log("ENEMY ALPHA: " + fadeOutAlpha);
+                fadeOutAlpha -= 0.05f;
+                Color newColor = new Color(1, 1, 1, fadeOutAlpha);
+                gameObject.GetComponent<SpriteRenderer>().color = newColor;
+                yield return new WaitForSeconds(0.05f);
+            }
+            
+            this.GetComponentInParent<EntityManager>().deleteObjectFromList(this.gameObject);
+            Destroy(this.gameObject);
         }
-        */
 
         public void OnTriggerEnter(Collider other)
         {
             //Debug.Log("Collision with: " + other.tag);
-            if (other.CompareTag("Basin") || other.CompareTag("Bullet"))
+            if (other.CompareTag("Basin"))
             {
                 this.GetComponentInParent<EntityManager>().deleteObjectFromList(this.gameObject);
                 Destroy(this.gameObject);
+            }
+            else if (other.CompareTag("Bullet"))
+            {
+                isShot();
+                //Debug.Log("bullet hit enemy");
+                fadeOut();
             }
         }
 

@@ -42,6 +42,9 @@ namespace Whisper
         /// </summary>
         private float currentElapsedTimeInQuad;
 
+
+        private List<int> speedUpTiers;
+
         /// <summary>
         /// Scrolls the quad texture verticallly by scrollSpeed.
         /// </summary>
@@ -52,41 +55,6 @@ namespace Whisper
             GetComponent<Renderer>().material.mainTextureOffset = offset;
         }
 
-        /// <summary>
-        /// Calls the halt() method of all children of this Quad
-        /// </summary>
-        private void haltAllChildren()
-        {
-            foreach (Transform child in transform)
-            {
-                child.GetComponent<IQuadChild>().halt();
-            }
-        }
-
-        /// <summary>
-        /// Calls the actuate() method of all children of this Quad
-        /// </summary>
-        private void actuateAllChildren()
-        {
-            foreach (Transform child in transform)
-            {
-                child.GetComponent<IQuadChild>().actuate();
-            }
-        }
-
-        /// <summary>
-        /// Calls the actuate() method of only non-enemy children of this Quad
-        /// </summary>
-        private void actuateAllBarricades()
-        {
-            foreach (Transform child in transform)
-            {
-                if (!child.CompareTag("Enemy"))
-                {
-                    child.GetComponent<IQuadChild>().actuate();
-                }
-            }
-        }
 
         /// <summary>
         /// Speeds up the lane every X seconds
@@ -94,20 +62,13 @@ namespace Whisper
         private void speedUpLane()
         {
             currentElapsedTimeInQuad += Time.deltaTime;
-            if (currentElapsedTimeInQuad > scrollSpeed * 50)
-            {
-                Debug.Log("SPEED UP LANE");
-                scrollSpeed += (scrollSpeed / 2);
-                enemySpeed += 0.1f;
-                barricadeSpeed += 0.5f;
-            }
-            else
-            {
-                //Debug.Log(currentElapsedTimeInQuad);
-            }
+            float tierTime = Mathf.Abs(PlayerController.totalTimeInQuads - currentElapsedTimeInQuad);
+            int multiplier = speedUpTiers.IndexOf(Mathf.CeilToInt(tierTime / 10) * 10);
+            enemySpeed = 0.5f + 0.2f*multiplier;
+            barricadeSpeed = 3f + multiplier;
+            Debug.Log(tierTime);
+            
         }
-
-
 
 
         private void OnTriggerStay(Collider other)
@@ -115,18 +76,15 @@ namespace Whisper
             if (other.gameObject.CompareTag("Player"))
             {
                 scrollImage();
-                //actuateAllChildren();
-                entityManager.moveAllObstacles();
-                speedUpLane();
+                if (canMoveEntitiesInQuad()) speedUpLane();
             }
 
-            if (other.gameObject.CompareTag("Whisper"))
-            {
-                entityManager.moveNonEnemies();
-                //actuateAllBarricades();
-            }
+            //if (other.gameObject.CompareTag("Whisper"))
+            //{
+            //    entityManager.moveNonEnemies();
+            //    //actuateAllBarricades();
+            //}
         }
-
 
 
         private void OnTriggerExit(Collider other)
@@ -137,17 +95,31 @@ namespace Whisper
             }
         }
 
+        public bool canMoveEntitiesInQuad()
+        {
+            if (PlayerController.currentQuad != this.name) return false;
+            return true;
+        }
+
         private void spawnEnemy()
         {
-            if (PlayerController.currentQuad != this.name) return;
+            if (!canMoveEntitiesInQuad()) return;
+            StartCoroutine(SpawnEnemiesWithDelay());
+        }
 
-            entityManager.spawn(ResourceManager.GameObjects.Enemy);
+        private IEnumerator SpawnEnemiesWithDelay()
+        {
+            for (int x = 0; x < Random.Range(1, 5); x++)
+            {
+                yield return new WaitForSeconds(0.4f);
+                entityManager.spawn(ResourceManager.GameObjects.Enemy);
+            }
+               
         }
 
         private void spawnObstacle()
         {
-            if (PlayerController.currentQuad != this.name) return;
-
+            if (!canMoveEntitiesInQuad()) return;
 
             if (Random.Range(1, 6) == 1)
             entityManager.spawn(ResourceManager.GameObjects.Barricade);
@@ -169,7 +141,6 @@ namespace Whisper
         // Use this for initialization
         void Start()
         {
-
             scrollSpeed = 0.2f;
             enemySpeed = 0.5f;
             barricadeSpeed = 3f;
@@ -183,7 +154,9 @@ namespace Whisper
 
             InvokeRepeating("spawnEnemy", 1f, 3f);
             InvokeRepeating("spawnObstacle", 1f, 1.75f);
-            
+
+            speedUpTiers = new List<int> {10,20,30,40,50,70,90,110};
+
         }
 
         // Update is called once per frame
