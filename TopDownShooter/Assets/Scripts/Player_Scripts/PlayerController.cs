@@ -292,6 +292,7 @@ namespace Whisper
             {
                 currentQuad = other.gameObject.name;
                 quadName = other.gameObject.name;
+                
             }
         }
 

@@ -44,6 +44,8 @@ namespace Whisper
 
 
         private List<int> speedUpTiers;
+        private bool isLaneExpanding;
+        private bool isLaneRetracting;
 
         /// <summary>
         /// Scrolls the quad texture verticallly by scrollSpeed.
@@ -66,10 +68,57 @@ namespace Whisper
             int multiplier = speedUpTiers.IndexOf(Mathf.CeilToInt(tierTime / 10) * 10);
             enemySpeed = 0.5f + 0.2f*multiplier;
             barricadeSpeed = 3f + multiplier;
-            Debug.Log(tierTime);
+
             
         }
 
+        private IEnumerator expandLane()
+        {
+            isLaneExpanding = true;
+
+            //make sure we are not expanding and retracting at the same time
+            //if we are, just wait
+            while (isLaneRetracting)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            while (this.transform.localScale.x < 5.75)
+            {
+                this.transform.localScale += new Vector3(0.05f, 0f, 0f);
+                yield return new WaitForSeconds(0.05f);
+
+            }
+            isLaneExpanding = false;
+        }
+
+        private IEnumerator retractLane()
+        {
+
+            //make sure we are not retracting while expanding
+            //if we are, just wait
+            while (isLaneExpanding)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
+            isLaneRetracting = true;
+            while (this.transform.localScale.x > 4.75)
+            {
+                this.transform.localScale -= new Vector3(0.05f, 0f, 0f);
+                yield return new WaitForSeconds(0.05f);
+            }
+            isLaneRetracting = false;
+        }
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.CompareTag("Player") && !isLaneExpanding)
+            {
+                Debug.Log("Currently expanding " + this.gameObject.name);
+                StartCoroutine(expandLane());
+            }
+        }
 
         private void OnTriggerStay(Collider other)
         {
@@ -89,8 +138,10 @@ namespace Whisper
 
         private void OnTriggerExit(Collider other)
         {
-            if (other.gameObject.CompareTag("Player") || other.gameObject.CompareTag("Whisper"))
+            if (other.gameObject.CompareTag("Player") && !isLaneRetracting)
             {
+                Debug.Log("Currently retracting " + this.gameObject.name);
+                StartCoroutine(retractLane());
                 //haltAllChildren();
             }
         }
@@ -154,6 +205,9 @@ namespace Whisper
 
             InvokeRepeating("spawnEnemy", 1f, 3f);
             InvokeRepeating("spawnObstacle", 1f, 1.75f);
+
+            isLaneExpanding = false;
+            isLaneRetracting = false;
 
             speedUpTiers = new List<int> {10,20,30,40,50,70,90,110};
 

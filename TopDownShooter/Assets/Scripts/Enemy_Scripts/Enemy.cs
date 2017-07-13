@@ -148,7 +148,7 @@ namespace Whisper
             float fadeOutAlpha = 0.5f;
             while (fadeOutAlpha > 0f)
             {
-                Debug.Log("ENEMY ALPHA: " + fadeOutAlpha);
+
                 fadeOutAlpha -= 0.05f;
                 Color newColor = new Color(1, 1, 1, fadeOutAlpha);
                 gameObject.GetComponent<SpriteRenderer>().color = newColor;
