@@ -1,3 +1,4 @@
 # Whisper
-This is a 2D shooter game using a combination of new and old mechanics to create an original, fast-paced gaming experience
+
+A 2D shooter game using a combination of new and old mechanics to create an original, fast-paced gaming experience. The game is being developed for PC, macOS, Android and iPhone.
 
